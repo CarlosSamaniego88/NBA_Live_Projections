@@ -2,6 +2,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
 import nba_scraper.nba_scraper as ns
+
 # import nba_scraper.nba_scraper as ns
 
 # BASKETBALL REFERENCE AND BEAUTIFUL SOUP FOR INDIVIDUAL PLAYER STATS
