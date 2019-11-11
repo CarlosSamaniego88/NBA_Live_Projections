@@ -3,15 +3,25 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
+#columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
+schedule_df = pd.DataFrame()
 
-stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020_games-november.html')
+for month in months: 
+    stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020_games-{}.html'.format(month))
 
-content = stats_page.content
+    content = stats_page.content
 
-soup = BeautifulSoup(content, 'html.parser')
-table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
+    soup = BeautifulSoup(content, 'html.parser')
+    table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
 
-html_str = str(table)
-df = pd.read_html(html_str)[0]
+    html_str = str(table)
 
-print(df.head(30))
+    temp_df = pd.read_html(html_str)[0]
+
+    #print(temp_df)
+    schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
+
+
+schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
+print(schedule_df)
