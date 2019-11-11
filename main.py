@@ -28,7 +28,11 @@ player_stats = [[td.getText() for td in rows[i].findAll('td')] for i in range(le
 
 stats = pd.DataFrame(player_stats, columns = headers)
 print(stats.head(10))
-# print(stats.dtypes)
+
+
+
+
+
 
 # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
 # first run: pip install nba_scraper
@@ -37,13 +41,22 @@ print(stats.head(10))
 # you can pass the function a list of strings or integers
 # all nba game ids have two leading zeros but you can omit these
 # to make it easier to create lists of game ids as I add them on
-nba_df = ns.scrape_game([21800001])
+# nba_df = ns.scrape_game([21800001])
 
-# if you want a csv if you don't pass a file path the default is home
-# directory
-# ns.scrape_game([21800001, 21800002], data_format='csv', data_dir='file/path')
-for col in nba_df.columns:
-    print(col) 
+# # if you want a csv if you don't pass a file path the default is home
+# # directory
+# # ns.scrape_game([21800001, 21800002], data_format='csv', data_dir='file/path')
+# for col in nba_df.columns:
+#     print(col) 
 
-print("Select specific columns:")
-print(nba_df[['period', 'pctimestring', 'event_type_de', 'score', 'home_team_abbrev', 'away_team_abbrev', 'hs', 'vs']])
+# print("Select specific columns:")
+# print(nba_df[['period', 'pctimestring', 'event_type_de', 'score', 'home_team_abbrev', 'away_team_abbrev', 'hs', 'vs']])
+
+import nba_scraper.nba_scraper as ns
+
+# if you want to return a dataframe
+# you can pass the function a list of strings or integers
+# all nba game ids have two leading zeros but you can omit these
+# to make it easier to create lists of game ids as I add them on
+nba_df = ns.scrape_game([21800001, 21800002])
+print(nba_df)
