@@ -60,7 +60,7 @@ X = stats.dropna().drop(columns = ['PTS', 'Player', 'Pos', 'Tm', 'G', 'GS', 'PF'
 columns = list(X.columns)
 #print(columns)
 k = (len(columns))
-k = 5
+#k = 5    #for testing
 R_squared_list, feature_list = [], []
 numb_features = []
 #print(type(columns))
@@ -84,7 +84,7 @@ df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'fe
 df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
 print(df_max_R_squared)
 
-## Plots R-Squared Values... Point of Most Curvature if the NUmber of Features We Should Use
+## Plots R-Squared Values... Point of Most Curvature if the Number of Features We Should Use
 fig = plt.figure(figsize = (16,6))
 ax = fig.add_subplot(1, 2, 1)
 ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
