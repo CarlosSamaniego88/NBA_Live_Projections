@@ -41,27 +41,32 @@ stats = pd.DataFrame(player_stats, columns = headers)
 
 ##########################Choosing The Optimal Model###############################
 
+## Linear Regression Function
 def fit_linear_reg(X,Y):
-    #Fit linear regression model and return RSS and R squared values
+    #Fit linear regression model and return R squared values
     model_k = LinearRegression(fit_intercept = True)
     model_k.fit(X,Y)
     R_squared = model_k.score(X,Y)
     return R_squared
 
-from tqdm import tnrange, tqdm_notebook
+## Split Up Response Variable From Predictors and Drop Unnecessary Columns
 Y = stats.dropna().PTS
 X = stats.dropna().drop(columns = ['PTS', 'Player', 'Pos', 'Tm', 'G', 'GS', 'PF', 'Age', 'FG%', '3P%', '2P%', 'FT%', 'eFG%', 'MP'], axis = 1)
-print(Y)
-print("\n")
-print(X)
+#print(Y)
+#print("\n")
+#print(X)
+
+
 columns = list(X.columns)
-print(columns)
+#print(columns)
 k = (len(columns))
+k = 5
 R_squared_list, feature_list = [], []
 numb_features = []
-print(type(columns))
-print("List of combinations: " + str(list(itertools.combinations(columns, k))))
+#print(type(columns))
+#print("List of combinations: " + str(list(itertools.combinations(columns, k))))
 
+## Gets R-Squared Value For Each Subset of Variables
 i = 1
 while (i < k + 1):
     combination_list = list(itertools.combinations(columns, i))
@@ -74,11 +79,22 @@ while (i < k + 1):
     print(i)
     i += 1
 
+## Dataframe of Best Subset From K=1 to K = Total Number of Variables
 df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'features':feature_list})
 df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
 print(df_max_R_squared)
 
+## Plots R-Squared Values... Point of Most Curvature if the NUmber of Features We Should Use
+fig = plt.figure(figsize = (16,6))
+ax = fig.add_subplot(1, 2, 1)
+ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
+ax.plot(df_max_R_squared.numb_features, df_max_R_squared.R_squared,color = 'r')
+ax.set_xlabel('# Features')
+ax.set_ylabel('R squared')
+ax.set_title('R_squared - Best subset selection')
+#ax.legend()
 
+plt.show()
 
 
 
