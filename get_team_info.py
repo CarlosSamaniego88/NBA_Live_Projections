@@ -16,31 +16,70 @@ from selenium import webdriver
 
 seasons = ['2017', '2018', '2019', '2020']
 
+# # for season in seasons:
+# stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss')
+# content = stats_page.content
+
+# soup = BeautifulSoup(content, 'html.parser')
+# table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
+
+# html_str = str(table)
+
+# temp_df = pd.read_html(html_str)[0]
+
+# schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False) 
+
+# print(schedule_df)
+
+#------------------------------------------------------------------------------
+
 # d = webdriver.Chrome()
 # chromedriver = '/Users/Carlos/Downloads/chromedriver'
 # d = webdriver.Chrome(chromedriver)
+# d.get('https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss')
+# s = soup(d.page_source, 'html.parser').find('table', {'class':'table'})
+# print(s)
+# pd.read_html(str(s))
+# headers, [_, *data] = [i.text for i in s.find_all('th')], [[i.text for i in b.find_all('td')] for b in s.find_all('tr')]
 
-# for season in seasons:
-stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss')
-content = stats_page.content
+# final_data = [i for i in data if len(i) > 1]
 
-soup = BeautifulSoup(content, 'html.parser')
-table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
+# print(final_data)
 
-html_str = str(table)
+#------------------------------------------------------------------------------
 
-temp_df = pd.read_html(html_str)[0]
+# NBA season we will be analyzing
+# year = 2019
+# URL page we will scraping (see image above)
+url = "https://www.basketball-reference.com/leagues/NBA_2020.html#team-stats-per_poss::1"
+# this is the HTML from the given URL
+html = urlopen(url)
+soup = BeautifulSoup(html, features='lxml')
 
-    #print(temp_df)
-schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False) 
+# use findALL() to get the column headers
+soup.findAll('tr', limit=2)
+# use getText()to extract the text we need into a list
+headers = [th.getText() for th in soup.findAll('tr', limit=2)[0].findAll('th')]
+# exclude the first column as we will not need the ranking order from Basketball Reference for the analysis
+headers = headers[1:]
+# print(headers)
 
+# avoid the first header row
+#table = soup.findAll("table", {"class": "sortable stats_table now_sortable"})
+table = soup.find(name='table', attrs={'id':'team-stats-per_poss_clone'})
+theaders = soup.findAll('tr', limit=5)
+#table = soup.find("table", {"class":"sortable stats_table now_sortable sliding_cols is_sorted fixed_cols"} )
+print(table)
+#print(theaders)
+headers = [th.getText() for th in soup.findAll('tr')[0].findAll('th')]
 
-# schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
-print(schedule_df)
-    # s = soup(d.page_source, 'html.parser').find('table', {'class':'table'})
-    # # pd.read_html(str(s))
-    # headers, [_, *data] = [i.text for i in s.find_all('th')], [[i.text for i in b.find_all('td')] for b in s.find_all('tr')]
+#headers = [[table.getText() for table in table[i].findAll('th')] for i in range(len(table))]
+print(headers)
+#player_stats = [[table.getText() for table in rows[i].findAll('table')] for i in range(len(rows))]
+#print(player_stats)
 
-    # final_data = [i for i in data if len(i) > 1]
+# print(rows)
+print(player_stats)
 
-    # print(final_data)
+stats = pd.DataFrame(player_stats, columns = headers)
+print(stats.head(10))
