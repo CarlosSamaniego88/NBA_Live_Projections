@@ -27,6 +27,6 @@ schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'],
 print(schedule_df.head(50))
 
 ## returns slate of games for a specific date
-print("/n")
+print("\n")
 day_schedule_df = schedule_df[schedule_df['Date'] == 'Wed, Oct 23, 2019']
 print(day_schedule_df)
