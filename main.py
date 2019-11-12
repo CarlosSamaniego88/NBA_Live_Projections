@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
+from get_schedule import *
+
 # import nba_scraper.nba_scraper as ns
 
 # BASKETBALL REFERENCE AND BEAUTIFUL SOUP FOR INDIVIDUAL PLAYER STATS
@@ -60,7 +62,7 @@ X = stats.dropna().drop(columns = ['PTS', 'Player', 'Pos', 'Tm', 'G', 'GS', 'PF'
 columns = list(X.columns)
 #print(columns)
 k = (len(columns))
-#k = 5    #for testing
+k = 5    #for testing
 R_squared_list, feature_list = [], []
 numb_features = []
 #print(type(columns))
@@ -94,12 +96,16 @@ ax.set_ylabel('R squared')
 ax.set_title('R_squared - Best subset selection')
 #ax.legend()
 
+plt.draw()
+
+
+#######
+todays_schedule_df = get_todays_games(21)
+print("Todays Schedule:")
+print("\n")
+print(todays_schedule_df)
+
 plt.show()
-
-
-
-
-
 
 
 # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
