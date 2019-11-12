@@ -22,6 +22,11 @@ for month in months:
     #print(temp_df)
     schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
 
-
+## returns slate of games for entire regular season
 schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
-print(schedule_df)
+print(schedule_df.head(50))
+
+## returns slate of games for a specific date
+print("/n")
+day_schedule_df = schedule_df[schedule_df['Date'] == 'Wed, Oct 23, 2019']
+print(day_schedule_df)
