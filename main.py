@@ -2,6 +2,14 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
 import nba_scraper.nba_scraper as ns
+import itertools
+import time
+import numpy as np
+import seaborn as sns
+#import statsmodels.api as sm
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 # import nba_scraper.nba_scraper as ns
 
@@ -27,7 +35,51 @@ rows = soup.findAll('tr')[1:]
 player_stats = [[td.getText() for td in rows[i].findAll('td')] for i in range(len(rows))]
 
 stats = pd.DataFrame(player_stats, columns = headers)
-print(stats.head(10))
+# print(stats.head(10))
+# print('\n')
+# print(len(stats.columns))
+
+##########################Choosing The Optimal Model###############################
+
+def fit_linear_reg(X,Y):
+    #Fit linear regression model and return RSS and R squared values
+    model_k = LinearRegression(fit_intercept = True)
+    model_k.fit(X,Y)
+    R_squared = model_k.score(X,Y)
+    return R_squared
+
+from tqdm import tnrange, tqdm_notebook
+Y = stats.dropna().PTS
+X = stats.dropna().drop(columns = ['PTS', 'Player', 'Pos', 'Tm', 'G', 'GS', 'PF', 'Age', 'FG%', '3P%', '2P%', 'FT%', 'eFG%', 'MP'], axis = 1)
+print(Y)
+print("\n")
+print(X)
+columns = list(X.columns)
+print(columns)
+k = (len(columns))
+R_squared_list, feature_list = [], []
+numb_features = []
+print(type(columns))
+print("List of combinations: " + str(list(itertools.combinations(columns, k))))
+
+i = 1
+while (i < k + 1):
+    combination_list = list(itertools.combinations(columns, i))
+    for combo in combination_list:
+        #print(X[list(combo)])
+        tmp_result = fit_linear_reg(X[list(combo)], Y)
+        R_squared_list.append(tmp_result)
+        feature_list.append(combo)
+        numb_features.append(len(combo))
+    print(i)
+    i += 1
+
+df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'features':feature_list})
+df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
+print(df_max_R_squared)
+
+
+
 
 
 
@@ -52,11 +104,11 @@ print(stats.head(10))
 # print("Select specific columns:")
 # print(nba_df[['period', 'pctimestring', 'event_type_de', 'score', 'home_team_abbrev', 'away_team_abbrev', 'hs', 'vs']])
 
-import nba_scraper.nba_scraper as ns
+# import nba_scraper.nba_scraper as ns
 
-# if you want to return a dataframe
-# you can pass the function a list of strings or integers
-# all nba game ids have two leading zeros but you can omit these
-# to make it easier to create lists of game ids as I add them on
-nba_df = ns.scrape_game([21800001, 21800002])
-print(nba_df)
+# # if you want to return a dataframe
+# # you can pass the function a list of strings or integers
+# # all nba game ids have two leading zeros but you can omit these
+# # to make it easier to create lists of game ids as I add them on
+# nba_df = ns.scrape_game([21800001, 21800002])
+# print(nba_df)
