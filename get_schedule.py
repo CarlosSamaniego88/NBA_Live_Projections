@@ -26,7 +26,14 @@ for month in months:
 schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
 print(schedule_df.head(50))
 
+## making list of all dates
+temp_list = list(schedule_df['Date'])
+list_of_dates = [temp_list[0]]
+for date in schedule_df['Date']:
+    if (date != (list_of_dates[len(list_of_dates) - 1])):
+        list_of_dates.append(date)
+
 ## returns slate of games for a specific date
 print("\n")
-day_schedule_df = schedule_df[schedule_df['Date'] == 'Wed, Oct 23, 2019']
+day_schedule_df = schedule_df[schedule_df['Date'] == list_of_dates[21]]
 print(day_schedule_df)
