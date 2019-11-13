@@ -12,6 +12,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 from get_schedule import *
+from get_team_info import *
 
 # import nba_scraper.nba_scraper as ns
 
@@ -30,7 +31,7 @@ soup.findAll('tr', limit=2)
 headers = [th.getText() for th in soup.findAll('tr', limit=2)[0].findAll('th')]
 # exclude the first column as we will not need the ranking order from Basketball Reference for the analysis
 headers = headers[1:]
-print(headers)
+#print(headers)
 
 # avoid the first header row
 rows = soup.findAll('tr')[1:]
@@ -40,6 +41,19 @@ stats = pd.DataFrame(player_stats, columns = headers)
 # print(stats.head(10))
 # print('\n')
 # print(len(stats.columns))
+
+team_stats = get_team_stats()[0]
+opp_stats = get_team_stats()[1]
+
+## making list of all teams
+temp_list = list(team_stats['Team'])
+list_of_teams = [temp_list[0]]
+for team in temp_list:
+    if (team != (list_of_teams[len(list_of_teams) - 1])):
+        list_of_teams.append(team)
+
+print("ist of teams: " + str(list_of_teams))
+
 
 ##########################Choosing The Optimal Model###############################
 
@@ -52,8 +66,8 @@ def fit_linear_reg(X,Y):
     return R_squared
 
 ## Split Up Response Variable From Predictors and Drop Unnecessary Columns
-Y = stats.dropna().PTS
-X = stats.dropna().drop(columns = ['PTS', 'Player', 'Pos', 'Tm', 'G', 'GS', 'PF', 'Age', 'FG%', '3P%', '2P%', 'FT%', 'eFG%', 'MP'], axis = 1)
+Y = team_stats.dropna().PTS
+X = team_stats.dropna().drop(columns = ['PTS', 'Team', 'G', 'PF', 'MP', 'Rk'], axis = 1)
 #print(Y)
 #print("\n")
 #print(X)
@@ -62,7 +76,7 @@ X = stats.dropna().drop(columns = ['PTS', 'Player', 'Pos', 'Tm', 'G', 'GS', 'PF'
 columns = list(X.columns)
 #print(columns)
 k = (len(columns))
-k = 5    #for testing
+k = 3    #for testing
 R_squared_list, feature_list = [], []
 numb_features = []
 #print(type(columns))
@@ -106,6 +120,20 @@ print("\n")
 print(todays_schedule_df)
 
 plt.show()
+
+
+## Gets The Subset of Features We Want To Use in Our Model
+print('\n')
+optimal_num_features = input("After looking at plot, how many features do you want to use: ")
+optimal_num_features = int(optimal_num_features)
+
+all_subsets = list(df_max_R_squared['features'])
+best_subset = list(all_subsets[optimal_num_features - 1])
+
+print('Best subset of features: ' + str(best_subset))
+
+
+
 
 
 # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
