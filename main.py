@@ -113,13 +113,6 @@ ax.set_title('R_squared - Best subset selection')
 #ax.legend()
 
 plt.draw()
-
-
-#######
-todays_schedule_df = get_todays_games(22)
-print("Todays Schedule:")
-print(todays_schedule_df)
-
 plt.show()
 
 
@@ -175,6 +168,42 @@ i = 0
 for team in list_of_teams:
     print(str(team) + ": " + str(predictions[i]))
     i += 1
+
+
+## Getting Schedule
+todays_schedule_df = get_todays_games(21)
+print("Todays Schedule:")
+print(todays_schedule_df)
+
+## Assigning Score Predictions to Each Matchup
+visiting_teams = list(todays_schedule_df['Visitor/Neutral'])
+home_teams = list(todays_schedule_df['Home/Neutral'])
+visiting_team_projections = []
+home_team_projections = []
+
+for visitor in visiting_teams:
+    i = 0
+    for team in list_of_teams:
+        if visitor == team:
+            visiting_team_projections.append([visitor, predictions[i]])
+        i += 1
+
+for host in home_teams:
+    i = 0
+    for team in list_of_teams:
+        if host == team:
+            home_team_projections.append([host, predictions[i]])
+        i += 1
+
+print('\n')
+print("Today's Matchup Score Predictions:")
+i = 0
+while (i < len(visiting_team_projections)):
+    print(str(visiting_team_projections[i]) + str(home_team_projections[i]))
+    i += 1
+
+
+
 
 
 # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
