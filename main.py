@@ -133,7 +133,46 @@ best_subset = list(all_subsets[optimal_num_features - 1])
 print('Best subset of features: ' + str(best_subset))
 
 
+## Make New DataFrame With Only Subset Features
+subset_df = team_stats[best_subset]
+print(subset_df)
 
+lin_reg = LinearRegression(fit_intercept = True)
+lin_reg = lin_reg.fit(subset_df, Y)
+
+total_attribute_list = []
+for attribute in best_subset:
+    attribute_list = []
+    for item in subset_df[attribute]:
+        attribute_list.append(item)
+    total_attribute_list.append(attribute_list)
+
+print(total_attribute_list)
+
+subset_stats_list = []
+i = 0
+while (i < len(list_of_teams)):
+    temp_list = []
+    for item in total_attribute_list:
+        temp_list.append(item[i])
+    subset_stats_list.append(temp_list)
+    i += 1
+
+print(subset_stats_list)
+
+
+predictions = []
+i = 0
+while (i < len(list_of_teams)):
+    predictions.append(lin_reg.predict(np.array([subset_stats_list[i]])))
+    i +=1
+
+
+
+
+print('/n')
+print('Point Scored Predictions: ')
+print(predictions)
 
 
 # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
