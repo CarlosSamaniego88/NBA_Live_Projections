@@ -44,6 +44,9 @@ stats = pd.DataFrame(player_stats, columns = headers)
 
 team_stats = get_team_stats()[0]
 opp_stats = get_team_stats()[1]
+team_stats = team_stats.sort_values(by = 'Team')
+opp_stats = opp_stats.sort_values(by = 'Team')
+
 
 ## making list of all teams
 temp_list = list(team_stats['Team'])
@@ -51,8 +54,7 @@ list_of_teams = [temp_list[0]]
 for team in temp_list:
     if (team != (list_of_teams[len(list_of_teams) - 1])):
         list_of_teams.append(team)
-
-print("ist of teams: " + str(list_of_teams))
+#print("List of teams: " + str(list_of_teams))
 
 
 ##########################Choosing The Optimal Model###############################
@@ -114,9 +116,8 @@ plt.draw()
 
 
 #######
-todays_schedule_df = get_todays_games(21)
+todays_schedule_df = get_todays_games(22)
 print("Todays Schedule:")
-print("\n")
 print(todays_schedule_df)
 
 plt.show()
@@ -135,19 +136,19 @@ print('Best subset of features: ' + str(best_subset))
 
 ## Make New DataFrame With Only Subset Features
 subset_df = team_stats[best_subset]
-print(subset_df)
+#print(subset_df)
 
 lin_reg = LinearRegression(fit_intercept = True)
 lin_reg = lin_reg.fit(subset_df, Y)
 
+## Formatting Subset_DF To Make Predictions
 total_attribute_list = []
 for attribute in best_subset:
     attribute_list = []
     for item in subset_df[attribute]:
         attribute_list.append(item)
     total_attribute_list.append(attribute_list)
-
-print(total_attribute_list)
+#print(total_attribute_list)
 
 subset_stats_list = []
 i = 0
@@ -157,22 +158,23 @@ while (i < len(list_of_teams)):
         temp_list.append(item[i])
     subset_stats_list.append(temp_list)
     i += 1
+#print(subset_stats_list)
 
-print(subset_stats_list)
-
-
+## Making Predicitions
 predictions = []
 i = 0
 while (i < len(list_of_teams)):
-    predictions.append(lin_reg.predict(np.array([subset_stats_list[i]])))
+    predictions.append(int(lin_reg.predict(np.array([subset_stats_list[i]]))))
     i +=1
 
-
-
-
-print('/n')
+print('\n')
 print('Point Scored Predictions: ')
-print(predictions)
+#print(predictions)
+
+i = 0
+for team in list_of_teams:
+    print(str(team) + ": " + str(predictions[i]))
+    i += 1
 
 
 # MCBARLOWE FOR LIVE PLAY BY PLAY INFO

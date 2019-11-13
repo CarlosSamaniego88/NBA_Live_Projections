@@ -14,9 +14,9 @@ def get_team_stats():
     seasons = ['2017', '2018', '2019', '2020']
 
     #NBA season
-    year = 2019
+    year = 2020
 
-    url = 'https://www.basketball-reference.com/leagues/NBA_2020.html'.format(year)
+    url = 'https://www.basketball-reference.com/leagues/NBA_{}.html'.format(year)
     response = requests.get(url)
 
     soup = BeautifulSoup(response.text, 'html.parser')
