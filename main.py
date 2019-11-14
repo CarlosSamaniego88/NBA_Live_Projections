@@ -44,8 +44,22 @@ stats = pd.DataFrame(player_stats, columns = headers)
 
 team_stats = get_team_stats()[0]
 opp_stats = get_team_stats()[1]
+
 team_stats = team_stats.sort_values(by = 'Team')
 opp_stats = opp_stats.sort_values(by = 'Team')
+
+#print(team_stats)
+#print(opp_stats)
+
+#print("Points Allowed:")
+points_allowed = list(opp_stats['PTS'])
+team_stats['DEF'] = points_allowed
+#print(team_stats)
+team_stats['MoV'] = team_stats['PTS'] - team_stats['DEF']
+team_stats = team_stats.sort_values(by = 'Team')
+team_stats['TOV'] = -1 * team_stats['TOV']
+print(team_stats)
+
 
 
 ## making list of all teams
@@ -68,8 +82,8 @@ def fit_linear_reg(X,Y):
     return R_squared
 
 ## Split Up Response Variable From Predictors and Drop Unnecessary Columns
-Y = team_stats.dropna().PTS
-X = team_stats.dropna().drop(columns = ['PTS', 'Team', 'G', 'PF', 'MP', 'Rk'], axis = 1)
+Y = team_stats.dropna().MoV
+X = team_stats.dropna().drop(columns = ['PTS', 'MoV', 'DEF', 'Team', 'G', 'PF', 'MP', 'Rk', 'FG', 'FGA', '3P', '3PA', '2P', '2PA', 'FT', 'FTA', 'TRB'], axis = 1)
 #print(Y)
 #print("\n")
 #print(X)
@@ -78,7 +92,7 @@ X = team_stats.dropna().drop(columns = ['PTS', 'Team', 'G', 'PF', 'MP', 'Rk'], a
 columns = list(X.columns)
 #print(columns)
 k = (len(columns))
-k = 3    #for testing
+#k = 3    #for testing
 R_squared_list, feature_list = [], []
 numb_features = []
 #print(type(columns))
@@ -157,21 +171,13 @@ while (i < len(list_of_teams)):
 predictions = []
 i = 0
 while (i < len(list_of_teams)):
-    predictions.append(int(lin_reg.predict(np.array([subset_stats_list[i]]))))
+    predictions.append(round(float(lin_reg.predict(np.array([subset_stats_list[i]]))), 3))
     i +=1
 
-print('\n')
-print('Point Scored Predictions: ')
 #print(predictions)
 
-i = 0
-for team in list_of_teams:
-    print(str(team) + ": " + str(predictions[i]))
-    i += 1
-
-
 ## Getting Schedule
-todays_schedule_df = get_todays_games(21)
+todays_schedule_df = get_todays_games(23)
 print("Todays Schedule:")
 print(todays_schedule_df)
 
@@ -180,6 +186,7 @@ visiting_teams = list(todays_schedule_df['Visitor/Neutral'])
 home_teams = list(todays_schedule_df['Home/Neutral'])
 visiting_team_projections = []
 home_team_projections = []
+
 
 for visitor in visiting_teams:
     i = 0
@@ -196,12 +203,14 @@ for host in home_teams:
         i += 1
 
 print('\n')
-print("Today's Matchup Score Predictions:")
+print("Margin of Victory Predictions:")
 i = 0
 while (i < len(visiting_team_projections)):
-    print(str(visiting_team_projections[i]) + str(home_team_projections[i]))
+    if (visiting_team_projections[i][1] > home_team_projections[i][1]):
+        print("The " + str(visiting_team_projections[i][0]) + " will beat the " + str(home_team_projections[i][0]) + " by " + str(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)))
+    else:
+        print("The " + str(home_team_projections[i][0]) + " will beat the " + str(visiting_team_projections[i][0]) + " by " + str(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2)))
     i += 1
-
 
 
 
