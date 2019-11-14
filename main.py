@@ -180,9 +180,9 @@ print("Margin of Victory Predictions:")
 i = 0
 while (i < len(visiting_team_projections)):
     if (visiting_team_projections[i][1] > home_team_projections[i][1]):
-        print("The " + str(visiting_team_projections[i][0]) + " will beat the " + str(home_team_projections[i][0]) + " by " + str(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)))
+        print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)))
     else:
-        print("The " + str(home_team_projections[i][0]) + " will beat the " + str(visiting_team_projections[i][0]) + " by " + str(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2)))
+        print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2)))
     i += 1
 
 
