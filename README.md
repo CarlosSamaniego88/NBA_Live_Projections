@@ -1,9 +1,12 @@
 # NBA_Live_Projections
 
-to run: 
-"python manage.py runserver"
+Before running:
+"export FLASK_APP=secondary.py"
+"export FLASK_DEBUG=1"
 
-should be located at "http://localhost:8000/" 
-To go to admin page, "http://localhost:8000/admin"
+To Run:
+"flask run"
 
-to stop running server, control C
+to stop --> Control C
+
+Site should be located at "http://localhost:5000/" 
