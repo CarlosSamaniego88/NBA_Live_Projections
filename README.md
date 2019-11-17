@@ -1,7 +1,7 @@
 # NBA_Live_Projections
 
 Before running:
-"export FLASK_APP=secondary.py"
+"export FLASK_APP=app.py"
 "export FLASK_DEBUG=1"
 
 To Run:
