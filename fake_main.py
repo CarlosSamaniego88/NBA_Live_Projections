@@ -8,6 +8,7 @@ import numpy as np
 import seaborn as sns
 #import statsmodels.api as sm
 import matplotlib.pyplot as plt
+import glob
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
@@ -39,7 +40,13 @@ list_of_teams = [temp_list[0]]
 for team in temp_list:
     if (team != (list_of_teams[len(list_of_teams) - 1])):
         list_of_teams.append(team)
-# print("List of teams: " + str(list_of_teams))
+
+list_of_teams.sort()
+# 'Projects/NBA_Live_Projections/
+nba_logos = glob.glob('NBA_Live_Projections/templates/nba_logos/*.png')
+nba_logos.sort()
+zipped = zip(list_of_teams, nba_logos)
+zipped = set(zipped)
 
 
 ##########################Choosing The Optimal Model###############################
