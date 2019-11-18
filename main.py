@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error
 
 from get_schedule import *
 from get_team_info import *
+from get_probability import *
 
 
 team_stats = get_team_stats()[0]
@@ -150,7 +151,7 @@ while (i < len(list_of_teams)):
 #print(predictions)
 
 ## Getting Schedule
-todays_schedule_df = get_todays_games(23)
+todays_schedule_df = get_todays_games(27)
 print("Todays Schedule:")
 print(todays_schedule_df)
 
@@ -183,6 +184,20 @@ while (i < len(visiting_team_projections)):
         print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)))
     else:
         print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2)))
+    i += 1
+
+print('\n')
+print("Win Percentage Predictions:")
+i = 0
+while (i < len(visiting_team_projections)):
+    if (visiting_team_projections[i][1] > home_team_projections[i][1]):
+        away_percentage = get_win_probability(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))[0]
+        home_percentage = get_win_probability(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))[1]
+        print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
+    else:
+        home_percentage = get_win_probability(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2))[0]
+        away_percentage = get_win_probability(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2))[1]
+        print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
     i += 1
 
 
