@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_todays_games(dateIndex):
+def get_todays_games(todays_date):
     months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
     #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
     schedule_df = pd.DataFrame()
@@ -37,6 +37,6 @@ def get_todays_games(dateIndex):
 
     ## returns slate of games for a specific date
     print("\n")
-    day_schedule_df = schedule_df[schedule_df['Date'] == list_of_dates[dateIndex]]
+    day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
     #print(day_schedule_df)
     return day_schedule_df
