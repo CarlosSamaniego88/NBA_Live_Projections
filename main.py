@@ -15,6 +15,7 @@ from get_schedule import *
 from get_team_info import *
 from get_probability import *
 from get_home_advantage import *
+from get_current_date import *
 
 
 team_stats = get_team_stats()[0]
@@ -152,8 +153,9 @@ while (i < len(list_of_teams)):
 #print(predictions)
 
 ## Getting Schedule
-todays_schedule_df = get_todays_games(27)
-print("Todays Schedule:")
+todays_schedule_df = get_todays_games(get_todays_date())
+todays_schedule_df = todays_schedule_df.drop(columns = ['Date'], axis = 1)
+print("Schedule for " + get_todays_date() + ":")
 print(todays_schedule_df)
 
 ## Assigning Score Predictions to Each Matchup
