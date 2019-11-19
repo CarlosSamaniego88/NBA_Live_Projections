@@ -43,7 +43,7 @@ for team in temp_list:
 
 list_of_teams.sort()
 # 'Projects/NBA_Live_Projections/
-nba_logos = glob.glob('NBA_Live_Projections/templates/nba_logos/*.png')
+nba_logos = glob.glob('static/*.png')
 nba_logos.sort()
 zipped = zip(list_of_teams, nba_logos)
 zipped = set(zipped)

@@ -45,8 +45,8 @@ def display_predictions():
     #     <h3> {{team}}, {{photo}} </h3>
     # {% endfor %}
 
-    return '<img src="/Users/Carlos/Projects/NBA_Live_Projections/images/atlanta.png"/>'
-    # return render_template('home.html', zipped=zipped)
+    # return '<img src="static/utah.png"/>'
+    return render_template('home.html', zipped=zipped)
 
 
 if __name__=="__main__":

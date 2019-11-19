@@ -7,6 +7,8 @@
     <title>NBA Projections</title>
 </head>
 <body>
-    <img src="images/washington.png" alt="portland" width="20%" height="auto">
+    {% for team, photo in zipped %}
+        <h3> {{team}} <img src="{{photo}}" alt=""> </h3>
+    {% endfor %}
 </body>
 </html>

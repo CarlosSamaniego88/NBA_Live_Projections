@@ -16,8 +16,6 @@ def get_home_advantage():
     str_cells = str(rows)
     #cleantext = BeautifulSoup(str_cells).get_text()
 
-
-
     list_rows = []
     for row in rows:
         cells = row.find_all('td')
