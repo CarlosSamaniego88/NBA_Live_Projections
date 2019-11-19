@@ -12,7 +12,7 @@ def get_todays_date():
 
     #Combining Weekday and Calendar Date
     todays_date = weekday + date
-    print(todays_date)
+    #print(todays_date)
 
 
     return todays_date

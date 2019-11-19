@@ -34,7 +34,7 @@ team_stats['DEF'] = points_allowed
 team_stats['MoV'] = team_stats['PTS'] - team_stats['DEF']
 team_stats = team_stats.sort_values(by = 'Team')
 team_stats['TOV'] = -1 * team_stats['TOV']
-print(team_stats)
+#print(team_stats)
 
 
 
@@ -93,23 +93,23 @@ df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) ==
 print(df_max_R_squared)
 
 ## Plots R-Squared Values... Point of Most Curvature if the Number of Features We Should Use
-fig = plt.figure(figsize = (16,6))
-ax = fig.add_subplot(1, 2, 1)
-ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
-ax.plot(df_max_R_squared.numb_features, df_max_R_squared.R_squared,color = 'r')
-ax.set_xlabel('# Features')
-ax.set_ylabel('R squared')
-ax.set_title('R_squared - Best subset selection')
-#ax.legend()
+# fig = plt.figure(figsize = (16,6))
+# ax = fig.add_subplot(1, 2, 1)
+# ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
+# ax.plot(df_max_R_squared.numb_features, df_max_R_squared.R_squared,color = 'r')
+# ax.set_xlabel('# Features')
+# ax.set_ylabel('R squared')
+# ax.set_title('R_squared - Best subset selection')
+# #ax.legend()
 
-plt.draw()
-plt.show()
+# plt.draw()
+# plt.show()
 
 
 ## Gets The Subset of Features We Want To Use in Our Model
 print('\n')
-optimal_num_features = input("After looking at plot, how many features do you want to use: ")
-optimal_num_features = int(optimal_num_features)
+#optimal_num_features = input("After looking at plot, how many features do you want to use: ")
+optimal_num_features = 6 #int(optimal_num_features)
 
 all_subsets = list(df_max_R_squared['features'])
 best_subset = list(all_subsets[optimal_num_features - 1])
@@ -179,6 +179,7 @@ for host in home_teams:
             home_team_projections.append([host, predictions[i] + home_advantage])
         i += 1
 
+#Spread Predictions
 print('\n')
 print("Margin of Victory Predictions:")
 i = 0
@@ -191,9 +192,15 @@ while (i < len(visiting_team_projections)):
         print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
     i += 1
 
+#Win Probabilities
 print('\n')
 print("Win Percentage Predictions:")
 i = 0
+fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
+axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
+fig1.suptitle('Win Probabilities for ' + get_todays_date())
+plt.rcParams['font.size'] = 7.0
+
 mov = 0
 while (i < len(visiting_team_projections)):
     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
@@ -201,11 +208,33 @@ while (i < len(visiting_team_projections)):
         away_percentage = get_win_probability(mov)[0]
         home_percentage = get_win_probability(mov)[1]
         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
+
     else:
         home_percentage = get_win_probability(mov)[0]
         away_percentage = get_win_probability(mov)[1]
         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
+    
+    labels = visiting_team_projections[i][0], home_team_projections[i][0]
+    sizes = [float(away_percentage.strip('%')), float(home_percentage.strip('%'))]
+    explode = (0.1, 0)
+    #fig1, ax1 = plt.subplots()
+    axes[i].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+    shadow=True, startangle=90)
+    axes[i].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    plt.draw()
     i += 1
+
+while (i < len(axes)):
+    axes[i] = axes[i].set_visible(False)
+    i += 1
+
+plt.show()
+
+
+
+
+
 
 
 
