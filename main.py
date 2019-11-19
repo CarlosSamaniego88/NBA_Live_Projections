@@ -14,6 +14,7 @@ from sklearn.metrics import mean_squared_error
 from get_schedule import *
 from get_team_info import *
 from get_probability import *
+from get_home_advantage import *
 
 
 team_stats = get_team_stats()[0]
@@ -161,7 +162,6 @@ home_teams = list(todays_schedule_df['Home/Neutral'])
 visiting_team_projections = []
 home_team_projections = []
 
-
 for visitor in visiting_teams:
     i = 0
     for team in list_of_teams:
@@ -169,34 +169,39 @@ for visitor in visiting_teams:
             visiting_team_projections.append([visitor, predictions[i]])
         i += 1
 
+home_advantage = round(get_home_advantage(), 2) ## gives advantage to home team
 for host in home_teams:
     i = 0
     for team in list_of_teams:
         if host == team:
-            home_team_projections.append([host, predictions[i]])
+            home_team_projections.append([host, predictions[i] + home_advantage])
         i += 1
 
 print('\n')
 print("Margin of Victory Predictions:")
 i = 0
+mov = 0
 while (i < len(visiting_team_projections)):
+    mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
     if (visiting_team_projections[i][1] > home_team_projections[i][1]):
-        print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)))
+        print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(mov))
     else:
-        print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2)))
+        print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
     i += 1
 
 print('\n')
 print("Win Percentage Predictions:")
 i = 0
+mov = 0
 while (i < len(visiting_team_projections)):
-    if (visiting_team_projections[i][1] > home_team_projections[i][1]):
-        away_percentage = get_win_probability(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))[0]
-        home_percentage = get_win_probability(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))[1]
+    mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
+    if (visiting_team_projections[i][1] > (home_team_projections[i][1])):
+        away_percentage = get_win_probability(mov)[0]
+        home_percentage = get_win_probability(mov)[1]
         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
     else:
-        home_percentage = get_win_probability(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2))[0]
-        away_percentage = get_win_probability(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2))[1]
+        home_percentage = get_win_probability(mov)[0]
+        away_percentage = get_win_probability(mov)[1]
         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
     i += 1
 
