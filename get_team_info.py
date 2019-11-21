@@ -31,7 +31,6 @@ def get_team_stats():
                 tables.append(pd.read_html(each)[0])
             except:
                 continue
-    #print("Here is our 'Team Per 100 Possessions Stats' table: \n", tables[4])
 
     team_stats = tables[4]
     opp_stats = tables[5]

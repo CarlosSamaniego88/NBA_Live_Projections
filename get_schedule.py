@@ -38,5 +38,5 @@ def get_todays_games(todays_date):
     ## returns slate of games for a specific date
     print("\n")
     day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
-    #print(day_schedule_df)
+    # print(day_schedule_df)
     return day_schedule_df

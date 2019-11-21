@@ -8,12 +8,15 @@ import numpy as np
 import seaborn as sns
 #import statsmodels.api as sm
 import matplotlib.pyplot as plt
-import glob
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+import glob
 
 from get_schedule import *
 from get_team_info import *
+from get_probability import *
+from get_home_advantage import *
+from get_current_date import *
 
 
 team_stats = get_team_stats()[0]
@@ -22,31 +25,18 @@ opp_stats = get_team_stats()[1]
 team_stats = team_stats.sort_values(by = 'Team')
 opp_stats = opp_stats.sort_values(by = 'Team')
 
-#print(team_stats)
-#print(opp_stats)
-
-#print("Points Allowed:")
 points_allowed = list(opp_stats['PTS'])
 team_stats['DEF'] = points_allowed
-#print(team_stats)
+
 team_stats['MoV'] = team_stats['PTS'] - team_stats['DEF']
 team_stats = team_stats.sort_values(by = 'Team')
 team_stats['TOV'] = -1 * team_stats['TOV']
-# print(team_stats)
 
-# making list of all teams
 temp_list = list(team_stats['Team'])
 list_of_teams = [temp_list[0]]
 for team in temp_list:
     if (team != (list_of_teams[len(list_of_teams) - 1])):
         list_of_teams.append(team)
-
-list_of_teams.sort()
-# 'Projects/NBA_Live_Projections/
-nba_logos = glob.glob('static/*.png')
-nba_logos.sort()
-zipped = zip(list_of_teams, nba_logos)
-zipped = set(zipped)
 
 
 ##########################Choosing The Optimal Model###############################
@@ -62,26 +52,19 @@ def fit_linear_reg(X,Y):
 ## Split Up Response Variable From Predictors and Drop Unnecessary Columns
 Y = team_stats.dropna().MoV
 X = team_stats.dropna().drop(columns = ['PTS', 'MoV', 'DEF', 'Team', 'G', 'PF', 'MP', 'Rk', 'FG', 'FGA', '3P', '3PA', '2P', '2PA', 'FT', 'FTA', 'TRB'], axis = 1)
-#print(Y)
-#print("\n")
-#print(X)
-
 
 columns = list(X.columns)
-#print(columns)
+
 k = (len(columns))
-#k = 3    #for testing
+
 R_squared_list, feature_list = [], []
 numb_features = []
-#print(type(columns))
-#print("List of combinations: " + str(list(itertools.combinations(columns, k))))
 
 ## Gets R-Squared Value For Each Subset of Variables
 i = 1
 while (i < k + 1):
     combination_list = list(itertools.combinations(columns, i))
     for combo in combination_list:
-        #print(X[list(combo)])
         tmp_result = fit_linear_reg(X[list(combo)], Y)
         R_squared_list.append(tmp_result)
         feature_list.append(combo)
@@ -94,24 +77,8 @@ df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'fe
 df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
 # print(df_max_R_squared)
 
-## Plots R-Squared Values... Point of Most Curvature if the Number of Features We Should Use
-# fig = plt.figure(figsize = (16,6))
-# ax = fig.add_subplot(1, 2, 1)
-# ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
-# ax.plot(df_max_R_squared.numb_features, df_max_R_squared.R_squared,color = 'r')
-# ax.set_xlabel('# Features')
-# ax.set_ylabel('R squared')
-# ax.set_title('R_squared - Best subset selection')
-#ax.legend()
-
-# plt.draw()
-# plt.show()
-
-
 ## Gets The Subset of Features We Want To Use in Our Model
-# print('\n')
-# optimal_num_features = input("After looking at plot, how many features do you want to use: ")
-optimal_num_features = int(5)
+optimal_num_features = 6
 
 all_subsets = list(df_max_R_squared['features'])
 best_subset = list(all_subsets[optimal_num_features - 1])
@@ -133,7 +100,6 @@ for attribute in best_subset:
     for item in subset_df[attribute]:
         attribute_list.append(item)
     total_attribute_list.append(attribute_list)
-#print(total_attribute_list)
 
 subset_stats_list = []
 i = 0
@@ -143,7 +109,6 @@ while (i < len(list_of_teams)):
         temp_list.append(item[i])
     subset_stats_list.append(temp_list)
     i += 1
-#print(subset_stats_list)
 
 ## Making Predicitions
 predictions = []
@@ -152,19 +117,17 @@ while (i < len(list_of_teams)):
     predictions.append(round(float(lin_reg.predict(np.array([subset_stats_list[i]]))), 3))
     i +=1
 
-#print(predictions)
-
 ## Getting Schedule
-todays_schedule_df = get_todays_games(23)
-# print("Todays Schedule:")
+todays_schedule_df = get_todays_games(get_todays_date())
+todays_schedule_df = todays_schedule_df.drop(columns = ['Date'], axis = 1)
+# print("Schedule for " + get_todays_date() + ":")
 # print(todays_schedule_df)
 
-## Assigning Score Predictions to Each Matchup
+# Assigning Score Predictions to Each Matchup
 visiting_teams = list(todays_schedule_df['Visitor/Neutral'])
 home_teams = list(todays_schedule_df['Home/Neutral'])
 visiting_team_projections = []
 home_team_projections = []
-
 
 for visitor in visiting_teams:
     i = 0
@@ -173,19 +136,66 @@ for visitor in visiting_teams:
             visiting_team_projections.append([visitor, predictions[i]])
         i += 1
 
+home_advantage = round(get_home_advantage(), 2) ## gives advantage to home team
 for host in home_teams:
     i = 0
     for team in list_of_teams:
         if host == team:
-            home_team_projections.append([host, predictions[i]])
+            home_team_projections.append([host, predictions[i] + home_advantage])
         i += 1
 
+#Spread Predictions
 # print('\n')
 # print("Margin of Victory Predictions:")
+
 # i = 0
+# mov = 0
 # while (i < len(visiting_team_projections)):
+#     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
 #     if (visiting_team_projections[i][1] > home_team_projections[i][1]):
-#         # print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)))
+#         print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(mov))
 #     else:
-#         # print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(round(home_team_projections[i][1] - visiting_team_projections[i][1], 2)))
+#         print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
 #     i += 1
+
+#Win Probabilities
+# print('\n')
+# print("Win Percentage Predictions:")
+
+list_of_teams.sort()
+nba_logos = glob.glob('static/*.png')
+nba_logos.sort()
+# print(list_of_teams)
+# zipped = zip(list_of_teams, nba_logos)
+# zipped = set(zipped)
+
+i = 0
+fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
+axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
+fig1.suptitle('Win Probabilities for ' + get_todays_date())
+plt.rcParams['font.size'] = 7.0
+
+projec_d = {}
+mov = 0
+while (i < len(visiting_team_projections)):
+    mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
+    if (visiting_team_projections[i][1] > (home_team_projections[i][1])):
+        away_percentage = get_win_probability(mov)[0]
+        home_percentage = get_win_probability(mov)[1]
+        if "static/"+str(visiting_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(visiting_team_projections[i][0])+".png"] = away_percentage
+        if "static/"+str(home_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(home_team_projections[i][0])+".png"] = home_percentage
+    else:
+        home_percentage = get_win_probability(mov)[0]
+        away_percentage = get_win_probability(mov)[1]
+        if "static/"+str(visiting_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(visiting_team_projections[i][0])+".png"] = away_percentage
+        if "static/"+str(home_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(home_team_projections[i][0])+".png"] = home_percentage
+    i+=1
+# print(projec_d)
+
+# for key, value in projec_d.items():
+#     print(key)
+#     print(value)
