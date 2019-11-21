@@ -7,9 +7,8 @@
     <title>NBA Projections</title>
 </head>
 <body>
-    {% for key in updated_dict.keys() %}
-        <img src="{{ key }}" alt="">
-        <h3> {{ updated_dict[key] }} </h3>
+    {% for item in projec_d.items() %}
+        <h3> {{ item }} </h3>
     {% endfor %}
 </body>
 </html>

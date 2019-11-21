@@ -169,11 +169,11 @@ nba_logos.sort()
 # zipped = zip(list_of_teams, nba_logos)
 # zipped = set(zipped)
 
-i = 0
-fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
-axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
-fig1.suptitle('Win Probabilities for ' + get_todays_date())
-plt.rcParams['font.size'] = 7.0
+# i = 0
+# fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
+# axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
+# fig1.suptitle('Win Probabilities for ' + get_todays_date())
+# plt.rcParams['font.size'] = 7.0
 
 projec_d = {}
 mov = 0
@@ -194,7 +194,7 @@ while (i < len(visiting_team_projections)):
         if "static/"+str(home_team_projections[i][0])+".png" in nba_logos:
             projec_d["static/"+str(home_team_projections[i][0])+".png"] = home_percentage
     i+=1
-# print(projec_d)
+print(projec_d)
 
 # for key, value in projec_d.items():
 #     print(key)

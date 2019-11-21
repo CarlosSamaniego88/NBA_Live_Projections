@@ -6,6 +6,7 @@ import itertools
 import time
 import numpy as np
 import seaborn as sns
+import glob
 #import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
@@ -84,13 +85,13 @@ while (i < k + 1):
         R_squared_list.append(tmp_result)
         feature_list.append(combo)
         numb_features.append(len(combo))
-    print(i)
+    # print(i)
     i += 1
 
 ## Dataframe of Best Subset From K=1 to K = Total Number of Variables
 df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'features':feature_list})
 df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
-print(df_max_R_squared)
+# print(df_max_R_squared)
 
 ## Plots R-Squared Values... Point of Most Curvature if the Number of Features We Should Use
 # fig = plt.figure(figsize = (16,6))
@@ -107,14 +108,14 @@ print(df_max_R_squared)
 
 
 ## Gets The Subset of Features We Want To Use in Our Model
-print('\n')
+# print('\n')
 #optimal_num_features = input("After looking at plot, how many features do you want to use: ")
 optimal_num_features = 6 #int(optimal_num_features)
 
 all_subsets = list(df_max_R_squared['features'])
 best_subset = list(all_subsets[optimal_num_features - 1])
 
-print('Best subset of features: ' + str(best_subset))
+# print('Best subset of features: ' + str(best_subset))
 
 
 ## Make New DataFrame With Only Subset Features
@@ -155,8 +156,8 @@ while (i < len(list_of_teams)):
 ## Getting Schedule
 todays_schedule_df = get_todays_games(get_todays_date())
 todays_schedule_df = todays_schedule_df.drop(columns = ['Date'], axis = 1)
-print("Schedule for " + get_todays_date() + ":")
-print(todays_schedule_df)
+# print("Schedule for " + get_todays_date() + ":")
+# print(todays_schedule_df)
 
 ## Assigning Score Predictions to Each Matchup
 visiting_teams = list(todays_schedule_df['Visitor/Neutral'])
@@ -180,50 +181,75 @@ for host in home_teams:
         i += 1
 
 #Spread Predictions
-print('\n')
-print("Margin of Victory Predictions:")
-i = 0
-mov = 0
-while (i < len(visiting_team_projections)):
-    mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
-    if (visiting_team_projections[i][1] > home_team_projections[i][1]):
-        print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(mov))
-    else:
-        print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
-    i += 1
+# print('\n')
+# print("Margin of Victory Predictions:")
+# i = 0
+# mov = 0
+# while (i < len(visiting_team_projections)):
+#     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
+#     if (visiting_team_projections[i][1] > home_team_projections[i][1]):
+#         # print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(mov))
+#     else:
+#         # print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
+#     i += 1
 
 #Win Probabilities
-print('\n')
-print("Win Percentage Predictions:")
+# print('\n')
+# print("Win Percentage Predictions:")
 i = 0
 fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
 axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
 fig1.suptitle('Win Probabilities for ' + get_todays_date())
 plt.rcParams['font.size'] = 7.0
 
+# mov = 0
+# while (i < len(visiting_team_projections)):
+#     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
+#     if (visiting_team_projections[i][1] > (home_team_projections[i][1])):
+#         away_percentage = get_win_probability(mov)[0]
+#         home_percentage = get_win_probability(mov)[1]
+#         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
+
+#     else:
+#         home_percentage = get_win_probability(mov)[0]
+#         away_percentage = get_win_probability(mov)[1]
+#         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
+    
+#     labels = visiting_team_projections[i][0], home_team_projections[i][0]
+#     sizes = [float(away_percentage.strip('%')), float(home_percentage.strip('%'))]
+#     explode = (0.1, 0)
+#     #fig1, ax1 = plt.subplots()
+#     axes[i].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+#     shadow=True, startangle=90)
+#     axes[i].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+#     plt.draw()
+#     i += 1
+
+list_of_teams.sort()
+nba_logos = glob.glob('static/*.png')
+nba_logos.sort()
+
+projec_d = {}
 mov = 0
 while (i < len(visiting_team_projections)):
     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
     if (visiting_team_projections[i][1] > (home_team_projections[i][1])):
         away_percentage = get_win_probability(mov)[0]
         home_percentage = get_win_probability(mov)[1]
-        print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
-
+        if "static/"+str(visiting_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(visiting_team_projections[i][0])+".png"] = away_percentage
+        if "static/"+str(home_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(home_team_projections[i][0])+".png"] = home_percentage
     else:
         home_percentage = get_win_probability(mov)[0]
         away_percentage = get_win_probability(mov)[1]
-        print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
-    
-    labels = visiting_team_projections[i][0], home_team_projections[i][0]
-    sizes = [float(away_percentage.strip('%')), float(home_percentage.strip('%'))]
-    explode = (0.1, 0)
-    #fig1, ax1 = plt.subplots()
-    axes[i].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-    shadow=True, startangle=90)
-    axes[i].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-    plt.draw()
-    i += 1
+        if "static/"+str(visiting_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(visiting_team_projections[i][0])+".png"] = away_percentage
+        if "static/"+str(home_team_projections[i][0])+".png" in nba_logos:
+            projec_d["static/"+str(home_team_projections[i][0])+".png"] = home_percentage
+    i+=1
+# print(projec_d)
 
 while (i < len(axes)):
     axes[i] = axes[i].set_visible(False)

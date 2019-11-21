@@ -2,7 +2,10 @@ from flask import Flask, render_template
 import glob
 from get_schedule import *
 from get_team_info import *
-from fake_main import *             #fake main
+from get_probability import *
+from get_home_advantage import *
+from get_current_date import *
+from main import *             #fake main
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -20,10 +23,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def display_predictions():
-    updated_dict = {}
-    for key in projec_d.keys():
-        updated_dict[key.decode('utf-8')] = projec_d[key.decode('utf-8')].key.decode('utf-8')
-    return render_template('home.html', updated_dict=updated_dict)
+    # updated_dict = {}
+    # for key in projec_d.keys():
+    #     updated_dict[key.decode('utf-8')] = projec_d[key.decode('utf-8')].key.decode('utf-8')
+    return render_template('home.html', projec_d=projec_d)
+    # return 'hello'
 
 if __name__=="__main__":
     app.run(debug=True)
