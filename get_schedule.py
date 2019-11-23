@@ -21,7 +21,6 @@ def get_todays_games(todays_date):
 
         temp_df = pd.read_html(html_str)[0]
 
-        #print(temp_df)
         schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
 
     ## returns slate of games for entire regular season
@@ -38,5 +37,4 @@ def get_todays_games(todays_date):
     ## returns slate of games for a specific date
     print("\n")
     day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
-    # print(day_schedule_df)
     return day_schedule_df

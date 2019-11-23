@@ -8,12 +8,10 @@ from bs4 import Comment
 import re
 
 #In this file we retreive the 'Team Per 100 Possessions Stats' for use
-
 # Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
 def get_team_stats():
     seasons = ['2017', '2018', '2019', '2020']
 
-    #NBA season
     year = 2020
 
     url = 'https://www.basketball-reference.com/leagues/NBA_{}.html'.format(year)

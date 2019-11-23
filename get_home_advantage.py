@@ -6,7 +6,6 @@ import re
 import xlsxwriter
 import pandas as pd
 import numpy as np
-#from matplotlib import pyplot as plt
 import seaborn as sns
 
 def get_home_advantage():
@@ -14,7 +13,6 @@ def get_home_advantage():
     soup = BeautifulSoup(pace.content, "lxml")
     rows = soup.find_all('tr')
     str_cells = str(rows)
-    #cleantext = BeautifulSoup(str_cells).get_text()
 
     list_rows = []
     for row in rows:
@@ -32,18 +30,13 @@ def get_home_advantage():
     df1[0] = df1[0].str.strip(']')
     df1[5] = df1[5].str.strip('+')
 
-
     df1 = df1.drop(df1.index[0])
-    #print(df1)
     home_margins_list = list(df1[5])
-    #print(home_margins_list)
+
     sum = 0
     for margin in home_margins_list:
         sum += float(margin)
-        #print(sum)
 
     home_average_margin = sum / 30
-
-    #print(home_average_margin)
 
     return home_average_margin

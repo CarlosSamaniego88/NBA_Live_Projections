@@ -20,8 +20,4 @@ def get_win_probability(projectedSpread):
             favorite_percentage = favorite_percentages[i]
             underdog_percentage = underdog_percentages[i]
         
-    
     return favorite_percentage, underdog_percentage
-
-
-

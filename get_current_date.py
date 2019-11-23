@@ -1,5 +1,3 @@
-
-
 def get_todays_date():
     from datetime import date
     # Getting Calendar Date
@@ -14,7 +12,4 @@ def get_todays_date():
     todays_date = weekday + date
     #print(todays_date)
 
-
     return todays_date
-
-
