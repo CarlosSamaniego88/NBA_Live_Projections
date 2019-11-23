@@ -7,8 +7,9 @@
     <title>NBA Projections</title>
 </head>
 <body>
-    {% for item in projec_d.items() %}
-        <h3> {{ item }} </h3>
+    {% for team in teams.keys() %}
+        <img src="{{ team }}" alt="">
+        <h3> {{ teams[team] }} </h3>
     {% endfor %}
 </body>
 </html>

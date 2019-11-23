@@ -249,7 +249,7 @@ while (i < len(visiting_team_projections)):
         if "static/"+str(home_team_projections[i][0])+".png" in nba_logos:
             projec_d["static/"+str(home_team_projections[i][0])+".png"] = home_percentage
     i+=1
-# print(projec_d)
+print(projec_d)
 
 while (i < len(axes)):
     axes[i] = axes[i].set_visible(False)
