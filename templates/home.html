@@ -20,9 +20,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     
-    {% for team in projec_d.keys() %}
-        <img src="{{ team }}" alt="">
-        <h3> {{ projec_d[team] }} </h3>
-    {% endfor %}
+    
+
+    <h1>Today's Games</h1>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Games #</th>
+            <th scope="col">First Team</th>
+            <th scope="col">Second Team</th>
+            <th scope="col">Projected Winner</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% set count = 0 %}
+            {% for i in range(0, len, 2) %}
+                <tr>
+                    <th scope="row">{{count}}</th>
+                    {% set count = count + 1 %}
+                    <td><img src="{{ k[i] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i] }}</h3></td>
+                    <td><img src="{{ k[i+1] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i+1] }}</h3></td>                    
+                    <td>
+                        {% if v[i] > v[i+1] %}
+                          <img src="{{ k[i] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i] }}</h3>
+                        {% elif v[i+1] > v[i] %}
+                          <img src="{{ k[i+1] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i+1] }}</h3>
+                        {% else %}
+                          <img src="{{ k[i] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i] }}</h3>
+                        {% endif %}
+                    </td>
+            {% endfor %}
+                </tr>
+        </tbody>
+      </table>
 </body>
 </html>

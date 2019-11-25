@@ -237,7 +237,7 @@ def main():
         axes[i] = axes[i].set_visible(False)
         i += 1
 
-    plt.show()
+    #plt.show()
 
     # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
     # first run: pip install nba_scraper

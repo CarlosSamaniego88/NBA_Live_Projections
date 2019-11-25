@@ -266,15 +266,14 @@ def display_predictions():
     # print(nba_df[['period', 'pctimestring', 'event_type_de', 'score', 'home_team_abbrev', 'away_team_abbrev', 'hs', 'vs']])
 
     # import nba_scraper.nba_scraper as ns
-
     # # if you want to return a dataframe
     # # you can pass the function a list of strings or integers
     # # all nba game ids have two leading zeros but you can omit these
     # # to make it easier to create lists of game ids as I add them on
     # nba_df = ns.scrape_game([21800001, 21800002])
     # print(nba_df)
-
-    return render_template('home.html', projec_d=projec_d)
+    # j = 0
+    return render_template('home.html', len = len(projec_d), projec_d=projec_d, k = list(projec_d.keys()), v = list(projec_d.values()) )
 
 #In this file we retreive the 'Team Per 100 Possessions Stats' for use
 # Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
