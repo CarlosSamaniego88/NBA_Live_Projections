@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 #!/Users/Carlos/Projects/NBA_Live_Projections/env/bin/python3
-=======
-#!/Users/alex/Dropbox/Documents_WakeForest/Senior/CSC 391/Github/NBA_Live_Projections/env/bin/python3
->>>>>>> 12d5e0dde44cf0e34b06d5ab720f4cd08e1da040
 
 ##############################################################################
 #
