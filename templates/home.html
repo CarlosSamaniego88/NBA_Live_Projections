@@ -20,9 +20,47 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     
-    {% for team in projec_d.keys() %}
-        <img src="{{ team }}" alt="">
-        <h3> {{ projec_d[team] }} </h3>
-    {% endfor %}
+    
+
+    <h1>Today's Games</h1>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Games #</th>
+            <th scope="col">First Team</th>
+            <th scope="col">Second Team</th>
+            <th scope="col">Projected Winner</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for i in range(0, len, 2) %}
+                <tr>
+                    <th scope="row">{{i}}</th>
+                    <td><img src="{{ list[i] }}" alt="" style="width:100px;height:100px;">{{projec_d[i]}}</td>
+                    <td><img src="{{ list[i+1] }}" alt="" style="width:100px;height:100px;"><h3>{{ projec_d[i+1] }}</h3></td>
+                    <td>Test</td>
+            {% endfor %} 
+                </tr>
+             
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Larry</td>
+            <td>the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody>
+      </table>
 </body>
 </html>

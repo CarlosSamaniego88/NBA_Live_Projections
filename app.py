@@ -274,7 +274,7 @@ def display_predictions():
     # nba_df = ns.scrape_game([21800001, 21800002])
     # print(nba_df)
 
-    return render_template('home.html', projec_d=projec_d)
+    return render_template('home.html', len = len(projec_d), projec_d=projec_d, list = list(projec_d.keys()))
 
 #In this file we retreive the 'Team Per 100 Possessions Stats' for use
 # Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
