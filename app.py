@@ -276,17 +276,80 @@ def display_predictions():
 
     return render_template('home.html', teams=teams)
 
+#In this file we retreive the 'Team Per 100 Possessions Stats' for use
+# Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
+def get_team_stats():
+    seasons = ['2017', '2018', '2019', '2020']
+
+    year = 2020
+
+    url = 'https://www.basketball-reference.com/leagues/NBA_{}.html'.format(year)
+    response = requests.get(url)
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    #remove comments so we can access the correct table
+    comments = soup.find_all(string=lambda text: isinstance(text, Comment))
+
+    tables = []
+    for each in comments:
+        if 'table' in each:
+            try:
+                tables.append(pd.read_html(each)[0])
+            except:
+                continue
+
+    team_stats = tables[4]
+    opp_stats = tables[5]
+    return team_stats, opp_stats
+
+def get_todays_games(todays_date):
+    months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
+    #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
+    schedule_df = pd.DataFrame()
+
+    for month in months: 
+        stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020_games-{}.html'.format(month))
+
+        content = stats_page.content
+
+        soup = BeautifulSoup(content, 'html.parser')
+        table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
+
+        html_str = str(table)
+
+        temp_df = pd.read_html(html_str)[0]
+
+        schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
+
+    ## returns slate of games for entire regular season
+    schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
+    #print(schedule_df.head(50))
+
+    ## making list of all dates
+    temp_list = list(schedule_df['Date'])
+    list_of_dates = [temp_list[0]]
+    for date in schedule_df['Date']:
+        if (date != (list_of_dates[len(list_of_dates) - 1])):
+            list_of_dates.append(date)
+
+    ## returns slate of games for a specific date
+    print("\n")
+    day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
+    return day_schedule_df
+
+
 def get_todays_date():
     # Getting Calendar Date
     today = date.today()
-    date = today.strftime("%b %d, %Y")
+    date1 = today.strftime("%b %d, %Y")
 
     # Getting weekday
     weekdays = ['Mon, ', 'Tue, ', 'Wed, ', 'Thu, ', 'Fri, ', 'Sat, ', 'Sun, ']
     weekday = weekdays[today.weekday()]
 
     #Combining Weekday and Calendar Date
-    todays_date = weekday + date
+    todays_date = weekday + date1
     #print(todays_date)
 
     return todays_date
@@ -341,68 +404,6 @@ def get_win_probability(projectedSpread):
             underdog_percentage = underdog_percentages[i]
         
     return favorite_percentage, underdog_percentage
-
-def get_todays_games(todays_date):
-    months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
-    #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
-    schedule_df = pd.DataFrame()
-
-    for month in months: 
-        stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020_games-{}.html'.format(month))
-
-        content = stats_page.content
-
-        soup = BeautifulSoup(content, 'html.parser')
-        table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
-
-        html_str = str(table)
-
-        temp_df = pd.read_html(html_str)[0]
-
-        schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
-
-    ## returns slate of games for entire regular season
-    schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
-    #print(schedule_df.head(50))
-
-    ## making list of all dates
-    temp_list = list(schedule_df['Date'])
-    list_of_dates = [temp_list[0]]
-    for date in schedule_df['Date']:
-        if (date != (list_of_dates[len(list_of_dates) - 1])):
-            list_of_dates.append(date)
-
-    ## returns slate of games for a specific date
-    print("\n")
-    day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
-    return day_schedule_df
-
-#In this file we retreive the 'Team Per 100 Possessions Stats' for use
-# Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
-def get_team_stats():
-    seasons = ['2017', '2018', '2019', '2020']
-
-    year = 2020
-
-    url = 'https://www.basketball-reference.com/leagues/NBA_{}.html'.format(year)
-    response = requests.get(url)
-
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    #remove comments so we can access the correct table
-    comments = soup.find_all(string=lambda text: isinstance(text, Comment))
-
-    tables = []
-    for each in comments:
-        if 'table' in each:
-            try:
-                tables.append(pd.read_html(each)[0])
-            except:
-                continue
-
-    team_stats = tables[4]
-    opp_stats = tables[5]
-    return team_stats, opp_stats
 
 if __name__=="__main__":
     app.run(debug=True)
