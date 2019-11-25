@@ -188,10 +188,10 @@ def display_predictions():
     # print('\n')
     # print("Win Percentage Predictions:")
     i = 0
-    fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
-    axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
-    fig1.suptitle('Win Probabilities for ' + get_todays_date())
-    plt.rcParams['font.size'] = 7.0
+    # fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
+    # axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
+    # fig1.suptitle('Win Probabilities for ' + get_todays_date())
+    # plt.rcParams['font.size'] = 7.0
 
     # mov = 0
     # while (i < len(visiting_team_projections)):
@@ -242,10 +242,10 @@ def display_predictions():
         i+=1
     # print(projec_d)
 
-    while (i < len(axes)):
-        axes[i] = axes[i].set_visible(False)
-        i += 1
-    plt.show()
+    # while (i < len(axes)):
+    #     axes[i] = axes[i].set_visible(False)
+    #     i += 1
+    # plt.show()
 
     # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
     # first run: pip install nba_scraper
@@ -274,7 +274,7 @@ def display_predictions():
     # nba_df = ns.scrape_game([21800001, 21800002])
     # print(nba_df)
 
-    return render_template('home.html', teams=teams)
+    return render_template('home.html', projec_d=projec_d)
 
 #In this file we retreive the 'Team Per 100 Possessions Stats' for use
 # Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
