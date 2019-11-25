@@ -33,11 +33,11 @@
           </tr>
         </thead>
         <tbody>
-            {% set count = 0 %}
+            {% set count = namespace(value=1) %}
             {% for i in range(0, len, 2) %}
                 <tr>
-                    <th scope="row">{{count}}</th>
-                    {% set count = count + 1 %}
+                    <th scope="row">{{count.value}}</th>
+                    {% set count.value = count.value + 1 %}
                     <td><img src="{{ k[i] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i] }}</h3></td>
                     <td><img src="{{ k[i+1] }}" alt="" style="width:100px;height:100px;"><h3>{{ v[i+1] }}</h3></td>                    
                     <td>
