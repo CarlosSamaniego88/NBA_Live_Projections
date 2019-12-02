@@ -20,8 +20,8 @@ from get_current_date import *
 
 
 def main():
-    team_stats = get_team_stats()[0]
-    opp_stats = get_team_stats()[1]
+    team_stats = get_team_stats(2020)[0]
+    opp_stats = get_team_stats(2020)[1]
 
     team_stats = team_stats.sort_values(by = 'Team')
     opp_stats = opp_stats.sort_values(by = 'Team')
