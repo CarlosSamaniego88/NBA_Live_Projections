@@ -273,7 +273,7 @@ def display_predictions():
     # nba_df = ns.scrape_game([21800001, 21800002])
     # print(nba_df)
     # j = 0
-    return render_template('home.html', len = len(projec_d), projec_d=projec_d, k = list(projec_d.keys()), v = list(projec_d.values()) )
+    return render_template('home.html', len = len(projec_d), projec_d=projec_d, k = list(projec_d.keys()), v = list(projec_d.values()))
 
 #In this file we retreive the 'Team Per 100 Possessions Stats' for use
 # Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
@@ -350,8 +350,14 @@ def get_todays_date():
     #Combining Weekday and Calendar Date
     todays_date = weekday + date1
     #print(todays_date)
+    new_date = ''
+    for letter in todays_date[:10]:
+        if letter != '0':
+            new_date += letter
+    new_date += todays_date[10:]
+    # print(new_date)
 
-    return todays_date
+    return new_date
 
 def get_home_advantage():
     pace = requests.get('https://www.teamrankings.com/nba/stat/average-scoring-margin', "html.parser")

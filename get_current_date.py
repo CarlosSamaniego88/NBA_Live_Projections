@@ -3,13 +3,20 @@ def get_todays_date():
     # Getting Calendar Date
     today = date.today()
     date = today.strftime("%b %d, %Y")
-
+    # print(date)
     # Getting weekday
     weekdays = ['Mon, ', 'Tue, ', 'Wed, ', 'Thu, ', 'Fri, ', 'Sat, ', 'Sun, ']
     weekday = weekdays[today.weekday()]
 
     #Combining Weekday and Calendar Date
     todays_date = weekday + date
-    #print(todays_date)
 
-    return todays_date
+    new_date = ''
+    for letter in todays_date[:10]:
+        if letter != '0':
+            new_date += letter
+    new_date += todays_date[10:]
+    # print(new_date)
+        
+    return new_date
+print(get_todays_date())
