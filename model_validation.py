@@ -16,7 +16,9 @@ from get_team_info import *
 from get_probability import *
 from get_home_advantage import *
 from get_current_date import *
+from get_past_team_info import *
 
+#cv_dataframes = []
 
 ### Getting Team Stats from 2015-2019 into one Dataframe
 team_stats = get_team_stats('2015')[0]  
@@ -35,12 +37,24 @@ team_stats['MoV'] = team_stats['PTS'] - team_stats['DEF']
 team_stats = team_stats.sort_values(by = 'Team')
 team_stats['TOV'] = -1 * team_stats['TOV']
 
-years = ['2016', '2017', '2018', '2019']
+team_stats = team_stats.drop(columns = ['PTS', 'DEF', 'G', 'PF', 'MP', 'Rk', 'FG', 'FGA', '3P', '3PA', '2P', '2PA', 'FT', 'FTA', 'TRB'], axis = 1)
+team_stats['Team'] = team_stats['Team'].str.replace('*', '')
+#cv_dataframes = cv_dataframes.append(team_stats)
+
+# making list of all teams
+temp_list = list(team_stats['Team'])
+list_of_teams = [temp_list[0]]
+for team in temp_list:
+    if (team != (list_of_teams[len(list_of_teams) - 1])):
+        list_of_teams.append(team)
+
+
+years = ['2016', '2017', '2018']
 
 for year in years:
 
-    temp_team_stats = get_team_stats(year)[0]
-    temp_opp_stats = get_team_stats(year)[1]
+    temp_team_stats = get_past_team_stats(year)[0]
+    temp_opp_stats = get_past_team_stats(year)[1]
 
     temp_team_stats = temp_team_stats.sort_values(by = 'Team')
     temp_opp_stats = temp_opp_stats.sort_values(by = 'Team')
@@ -55,16 +69,26 @@ for year in years:
     temp_team_stats = temp_team_stats.sort_values(by = 'Team')
     temp_team_stats['TOV'] = -1 * temp_team_stats['TOV']
 
+    temp_team_stats = temp_team_stats.drop(columns = ['PTS', 'DEF', 'G', 'PF', 'MP', 'Rk', 'FG', 'FGA', '3P', '3PA', '2P', '2PA', 'FT', 'FTA', 'TRB'], axis = 1)
+    
+
     team_stats = team_stats.append(temp_team_stats)
+    team_stats['Team'] = team_stats['Team'].str.replace('*', '')
+    by_row_index = team_stats.groupby(team_stats.Team)
+    team_stats = by_row_index.mean()
+
+    #cv_dataframes = cv_dataframes.append(team_stats)
+    #print(team_stats)
 
     print(year)
-
-#print(team_stats)
+print('\n')
+#print(cv_dataframes)
+print(team_stats)
 
 
 ###Getting Matchups and Final Scores of Games from 2015-2019
-months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
-years = ['2015', '2016', '2017', '2018', '2019']
+months = ['october', 'november', 'december', 'january', 'february', 'march']
+years = ['2019']
 #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
 schedule_df = pd.DataFrame()
 
@@ -83,5 +107,130 @@ for year in years:
 
         schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
     print(year)
+schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
+
+#print(schedule_df['PTS'])
+print(type(schedule_df['PTS']))
 
 print(schedule_df)
+
+schedule_df['MoV'] = (schedule_df['PTS'].astype('int64') - schedule_df['PTS.1'].astype('int64'))
+
+print(schedule_df)
+
+
+trueMoV = list(schedule_df['MoV'])
+
+def fit_linear_reg(X,Y):
+    #Fit linear regression model and return R squared values
+    model_k = LinearRegression(fit_intercept = True)
+    model_k.fit(X,Y)
+    R_squared = model_k.score(X,Y)
+    return R_squared
+
+#team_stats = cv_dataframes[3]
+Y = team_stats.dropna().MoV
+X = team_stats.dropna().drop(columns = ['MoV'], axis = 1)
+
+columns = list(X.columns)
+
+k = (len(columns))
+
+R_squared_list, feature_list = [], []
+numb_features = []
+
+## Gets R-Squared Value For Each Subset of Variables
+i = 1
+while (i < k + 1):
+    combination_list = list(itertools.combinations(columns, i))
+    for combo in combination_list:  
+        tmp_result = fit_linear_reg(X[list(combo)], Y)
+        R_squared_list.append(tmp_result)
+        feature_list.append(combo)
+        numb_features.append(len(combo))
+    i += 1
+
+## Dataframe of Best Subset From K=1 to K = Total Number of Variables
+df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'features':feature_list})
+df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
+
+optimal_num_features = 6 #int(optimal_num_features)
+
+all_subsets = list(df_max_R_squared['features'])
+best_subset = list(all_subsets[optimal_num_features - 1])
+
+print('Best subset of features: ' + str(best_subset))
+
+
+## Make New DataFrame With Only Subset Features
+subset_df = team_stats[best_subset]
+#print(subset_df)
+
+lin_reg = LinearRegression(fit_intercept = True)
+lin_reg = lin_reg.fit(subset_df, Y)
+
+# Formatting Subset_DF To Make Predictions
+total_attribute_list = []
+for attribute in best_subset:
+    attribute_list = []
+    for item in subset_df[attribute]:
+        attribute_list.append(item)
+    total_attribute_list.append(attribute_list)
+
+
+subset_stats_list = []
+i = 0
+while (i < len(list_of_teams)):
+    temp_list = []
+    for item in total_attribute_list:
+        temp_list.append(item[i])
+    subset_stats_list.append(temp_list)
+    i += 1
+#print(subset_stats_list)
+
+## Making Predicitions
+predictions = []
+i = 0
+while (i < len(list_of_teams)):
+    predictions.append(round(float(lin_reg.predict(np.array([subset_stats_list[i]]))), 3))
+    i +=1
+
+#print(predictions)
+
+visiting_teams = list(schedule_df['Visitor/Neutral'])
+home_teams = list(schedule_df['Home/Neutral'])
+visiting_team_projections = []
+home_team_projections = []
+
+for visitor in visiting_teams:
+    i = 0
+    for team in list_of_teams:
+        if visitor == team:
+            visiting_team_projections.append([visitor, predictions[i]])
+        i += 1
+
+home_advantage = round(get_home_advantage(), 2) ## gives advantage to home team
+for host in home_teams:
+    i = 0
+    for team in list_of_teams:
+        if host == team:
+            home_team_projections.append([host, predictions[i] + home_advantage])
+        i += 1
+
+mov_pred = []
+#schedule_df.reset_index(drop = True, inplace=True)
+i = 0
+while (i < len(schedule_df.index)):
+    mov = round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)
+    mov_pred.append(mov)
+    i += 1
+
+
+print(mov_pred)
+print(i)
+print(len(mov_pred))
+print(len(schedule_df.index))
+
+
+mse = mean_squared_error(trueMoV, mov_pred)
+print(mse)
