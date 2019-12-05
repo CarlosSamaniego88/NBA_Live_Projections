@@ -78,18 +78,18 @@ def main():
     df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'features':feature_list})
     df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
 
-    ## Plots R-Squared Values... Point of Most Curvature if the Number of Features We Should Use
-    # fig = plt.figure(figsize = (16,6))
-    # ax = fig.add_subplot(1, 2, 1)
-    # ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
-    # ax.plot(df_max_R_squared.numb_features, df_max_R_squared.R_squared,color = 'r')
-    # ax.set_xlabel('# Features')
-    # ax.set_ylabel('R squared')
-    # ax.set_title('R_squared - Best subset selection')
-    # #ax.legend()
+    # Plots R-Squared Values... Point of Most Curvature if the Number of Features We Should Use
+    fig = plt.figure(figsize = (16,6))
+    ax = fig.add_subplot(1, 2, 1)
+    ax.scatter(df_max_R_squared.numb_features, df_max_R_squared.R_squared, alpha = .2, color = 'darkblue' )
+    ax.plot(df_max_R_squared.numb_features, df_max_R_squared.R_squared,color = 'r')
+    ax.set_xlabel('# Features')
+    ax.set_ylabel('R squared')
+    ax.set_title('R_squared - Best subset selection')
+    #ax.legend()
 
-    # plt.draw()
-    # plt.show()
+    plt.draw()
+    plt.show()
 
 
     ## Gets The Subset of Features We Want To Use in Our Model
@@ -99,7 +99,7 @@ def main():
     all_subsets = list(df_max_R_squared['features'])
     best_subset = list(all_subsets[optimal_num_features - 1])
 
-    # print('Best subset of features: ' + str(best_subset))
+    print('Best subset of features: ' + str(best_subset))
 
 
     ## Make New DataFrame With Only Subset Features
@@ -164,17 +164,17 @@ def main():
             i += 1
 
     #Spread Predictions
-    # print('\n')
-    # print("Margin of Victory Predictions:")
-    # i = 0
-    # mov = 0
-    # while (i < len(visiting_team_projections)):
-    #     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
-    #     if (visiting_team_projections[i][1] > home_team_projections[i][1]):
-    #         # print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(mov))
-    #     else:
-    #         # print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
-    #     i += 1
+    print('\n')
+    print("Margin of Victory Predictions:")
+    i = 0
+    mov = 0
+    while (i < len(visiting_team_projections)):
+        mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
+        if (visiting_team_projections[i][1] > home_team_projections[i][1]):
+            print(str(visiting_team_projections[i][0]) + " over " + str(home_team_projections[i][0]) + " by " + str(mov))
+        else:
+            print(str(home_team_projections[i][0]) + " over " + str(visiting_team_projections[i][0]) + " by " + str(mov))
+        i += 1
 
     #Win Probabilities
     # print('\n')
@@ -267,3 +267,4 @@ def main():
     # # to make it easier to create lists of game ids as I add them on
     # nba_df = ns.scrape_game([21800001, 21800002])
     # print(nba_df)
+main()
