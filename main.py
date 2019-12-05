@@ -18,6 +18,7 @@ from get_probability import *
 from get_home_advantage import *
 from get_current_date import *
 
+#COMPLETE VERSION, main script in app.py is main, but reduced.
 
 def main():
     team_stats = get_team_stats(2020)[0]
@@ -208,6 +209,7 @@ def main():
     #     plt.draw()
     #     i += 1
 
+    #213 - 236 written by Carlos Samaniego, Andrew Haisfield
     list_of_teams.sort()
     nba_logos = glob.glob('static/*.png')
     nba_logos.sort()
