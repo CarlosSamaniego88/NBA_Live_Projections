@@ -19,4 +19,4 @@ def get_todays_date():
     # print(new_date)
         
     return new_date
-print(get_todays_date())
+#print(get_todays_date())
