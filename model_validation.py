@@ -21,7 +21,7 @@ from get_past_team_info import *
 from sklearn import tree
 from sklearn import ensemble
 
-algo = 1
+algo = 2
 while (algo < 5):
     year_set = 1
     while (year_set < 5):
@@ -151,7 +151,7 @@ while (algo < 5):
                 model = KNeighborsRegressor(n_neighbors=4)
                 model.fit(X, Y)
             elif (algo == 3):
-                model = tree.DecisionTreeRegressor(criterion='mse')
+                model = tree.DecisionTreeRegressor(criterion='mse', max_depth=4)
                 model.fit(X, Y)
             else:
                 params = {'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2, 'learning_rate': 0.01, 'loss': 'ls'}
@@ -208,7 +208,7 @@ while (algo < 5):
             model = KNeighborsRegressor(n_neighbors=4)
             model.fit(subset_df, Y)
         elif (algo == 3):
-            model = tree.DecisionTreeRegressor(criterion='mse')
+            model = tree.DecisionTreeRegressor(criterion='mse', max_depth = 4)
             model = model.fit(subset_df, Y)
         else:
             params = {'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2, 'learning_rate': 0.01, 'loss': 'ls'}
