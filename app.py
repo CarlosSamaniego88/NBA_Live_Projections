@@ -1,10 +1,10 @@
 from flask import Flask, render_template
 import glob
-# from get_schedule import *
-# from get_team_info import *
-# from get_probability import *
-# from get_home_advantage import *
-# from get_current_date import *
+from get_schedule import *
+from get_team_info import *
+from get_probability import *
+from get_home_advantage import *
+from get_current_date import *
 # from main import *             #fake main
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -29,8 +29,8 @@ app = Flask(__name__)
 @app.route('/')
 def display_predictions():
     # teams = {'static/Miami Heat.png': '53.5%', 'static/Milwaukee Bucks.png':'25.5%'}
-    team_stats = get_team_stats()[0]
-    opp_stats = get_team_stats()[1]
+    team_stats = get_team_stats(2020)[0]
+    opp_stats = get_team_stats(2020)[1]
 
     team_stats = team_stats.sort_values(by = 'Team')
     opp_stats = opp_stats.sort_values(by = 'Team')
@@ -274,141 +274,6 @@ def display_predictions():
     # print(nba_df)
     # j = 0
     return render_template('home.html', len = len(projec_d), projec_d=projec_d, k = list(projec_d.keys()), v = list(projec_d.values()))
-
-#In this file we retreive the 'Team Per 100 Possessions Stats' for use
-# Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
-def get_team_stats():
-    seasons = ['2017', '2018', '2019', '2020']
-
-    year = 2020
-
-    url = 'https://www.basketball-reference.com/leagues/NBA_{}.html'.format(year)
-    response = requests.get(url)
-
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    #remove comments so we can access the correct table
-    comments = soup.find_all(string=lambda text: isinstance(text, Comment))
-
-    tables = []
-    for each in comments:
-        if 'table' in each:
-            try:
-                tables.append(pd.read_html(each)[0])
-            except:
-                continue
-
-    team_stats = tables[4]
-    opp_stats = tables[5]
-    return team_stats, opp_stats
-
-def get_todays_games(todays_date):
-    months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
-    #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
-    schedule_df = pd.DataFrame()
-
-    for month in months: 
-        stats_page = requests.get('https://www.basketball-reference.com/leagues/NBA_2020_games-{}.html'.format(month))
-
-        content = stats_page.content
-
-        soup = BeautifulSoup(content, 'html.parser')
-        table = soup.findAll(name = 'table', attrs= {'id': 'schedule'})
-
-        html_str = str(table)
-
-        temp_df = pd.read_html(html_str)[0]
-
-        schedule_df = schedule_df.append(temp_df, ignore_index = True, sort=False)
-
-    ## returns slate of games for entire regular season
-    schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
-    #print(schedule_df.head(50))
-
-    ## making list of all dates
-    temp_list = list(schedule_df['Date'])
-    list_of_dates = [temp_list[0]]
-    for date in schedule_df['Date']:
-        if (date != (list_of_dates[len(list_of_dates) - 1])):
-            list_of_dates.append(date)
-
-    ## returns slate of games for a specific date
-    print("\n")
-    day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
-    return day_schedule_df
-
-
-def get_todays_date():
-    # Getting Calendar Date
-    today = date.today()
-    date1 = today.strftime("%b %d, %Y")
-
-    # Getting weekday
-    weekdays = ['Mon, ', 'Tue, ', 'Wed, ', 'Thu, ', 'Fri, ', 'Sat, ', 'Sun, ']
-    weekday = weekdays[today.weekday()]
-
-    #Combining Weekday and Calendar Date
-    todays_date = weekday + date1
-    #print(todays_date)
-    new_date = ''
-    for letter in todays_date[:10]:
-        if letter != '0':
-            new_date += letter
-    new_date += todays_date[10:]
-    # print(new_date)
-
-    return new_date
-
-def get_home_advantage():
-    pace = requests.get('https://www.teamrankings.com/nba/stat/average-scoring-margin', "html.parser")
-    soup = BeautifulSoup(pace.content, "lxml")
-    rows = soup.find_all('tr')
-    str_cells = str(rows)
-
-    list_rows = []
-    for row in rows:
-        cells = row.find_all('td')
-        str_cells = str(cells)
-        clean = re.compile('<.*?>')
-        clean2 = (re.sub(clean, '',str_cells))
-        list_rows.append(clean2)
-
-    df = pd.DataFrame(list_rows)
-
-    df1 = df[0].str.split(', ', expand=True)
-
-    df1[0] = df1[0].str.strip('[')
-    df1[0] = df1[0].str.strip(']')
-    df1[5] = df1[5].str.strip('+')
-
-    df1 = df1.drop(df1.index[0])
-    home_margins_list = list(df1[5])
-
-    sum = 0
-    for margin in home_margins_list:
-        sum += float(margin)
-
-    home_average_margin = sum / 30
-
-    return home_average_margin
-
-def get_win_probability(projectedSpread):
-
-    probabilities = pd.read_csv("spread_to_probability.csv")
-    favorite_percentage = ''
-    underdog_percentage = ''
-
-    spreads = list(probabilities['Spread'])
-    favorite_percentages = list(probabilities['Home'])
-    underdog_percentages = list(probabilities['Away'])
-
-    i = 0
-    for i in range(len(spreads)):
-        if ((projectedSpread >= spreads[i]) and (projectedSpread <= spreads[i + 1])):
-            favorite_percentage = favorite_percentages[i]
-            underdog_percentage = underdog_percentages[i]
-        
-    return favorite_percentage, underdog_percentage
 
 if __name__=="__main__":
     app.run(debug=True)
