@@ -86,25 +86,20 @@ def main():
     ax.set_xlabel('# Features')
     ax.set_ylabel('R squared')
     ax.set_title('R_squared - Best subset selection')
-    #ax.legend()
 
     plt.draw()
     plt.show()
 
 
     ## Gets The Subset of Features We Want To Use in Our Model
-    #optimal_num_features = input("After looking at plot, how many features do you want to use: ")
-    optimal_num_features = 6 #int(optimal_num_features)
+    optimal_num_features = 6
 
     all_subsets = list(df_max_R_squared['features'])
     best_subset = list(all_subsets[optimal_num_features - 1])
-
     print('Best subset of features: ' + str(best_subset))
-
 
     ## Make New DataFrame With Only Subset Features
     subset_df = team_stats[best_subset]
-
     lin_reg = LinearRegression(fit_intercept = True)
     lin_reg = lin_reg.fit(subset_df, Y)
 
@@ -115,7 +110,6 @@ def main():
         for item in subset_df[attribute]:
             attribute_list.append(item)
         total_attribute_list.append(attribute_list)
-    #print(total_attribute_list)
 
     subset_stats_list = []
     i = 0
@@ -125,7 +119,6 @@ def main():
             temp_list.append(item[i])
         subset_stats_list.append(temp_list)
         i += 1
-    #print(subset_stats_list)
 
     ## Making Predicitions
     predictions = []
@@ -134,13 +127,11 @@ def main():
         predictions.append(round(float(lin_reg.predict(np.array([subset_stats_list[i]]))), 3))
         i +=1
 
-    #print(predictions)
 
     ## Getting Schedule
     todays_schedule_df = get_todays_games(get_todays_date())
     todays_schedule_df = todays_schedule_df.drop(columns = ['Date'], axis = 1)
-    # print("Schedule for " + get_todays_date() + ":")
-    # print(todays_schedule_df)
+
 
     ## Assigning Score Predictions to Each Matchup
     visiting_teams = list(todays_schedule_df['Visitor/Neutral'])
@@ -177,39 +168,14 @@ def main():
         i += 1
 
     #Win Probabilities
-    # print('\n')
-    # print("Win Percentage Predictions:")
     i = 0
     fig1, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(5, 3)
     axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12, ax13, ax14, ax15]
     fig1.suptitle('Win Probabilities for ' + get_todays_date())
     plt.rcParams['font.size'] = 7.0
 
-    # mov = 0
-    # while (i < len(visiting_team_projections)):
-    #     mov = abs(round(visiting_team_projections[i][1] - home_team_projections[i][1], 2))
-    #     if (visiting_team_projections[i][1] > (home_team_projections[i][1])):
-    #         away_percentage = get_win_probability(mov)[0]
-    #         home_percentage = get_win_probability(mov)[1]
-    #         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
 
-    #     else:
-    #         home_percentage = get_win_probability(mov)[0]
-    #         away_percentage = get_win_probability(mov)[1]
-    #         print(str(visiting_team_projections[i][0]) + "(" + away_percentage + ") @ " + str(home_team_projections[i][0]) + "(" + home_percentage + ")")
-        
-    #     labels = visiting_team_projections[i][0], home_team_projections[i][0]
-    #     sizes = [float(away_percentage.strip('%')), float(home_percentage.strip('%'))]
-    #     explode = (0.1, 0)
-    #     #fig1, ax1 = plt.subplots()
-    #     axes[i].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-    #     shadow=True, startangle=90)
-    #     axes[i].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-    #     plt.draw()
-    #     i += 1
-
-    #213 - 236 written by Carlos Samaniego, Andrew Haisfield
+    #178 - 206 written by Carlos Samaniego, Andrew Haisfield
     list_of_teams.sort()
     nba_logos = glob.glob('static/*.png')
     nba_logos.sort()
@@ -239,32 +205,4 @@ def main():
         axes[i] = axes[i].set_visible(False)
         i += 1
 
-    #plt.show()
-
-    # MCBARLOWE FOR LIVE PLAY BY PLAY INFO
-    # first run: pip install nba_scraper
-    # import nba_scraper.nba_scraper as ns
-    # if you want to return a dataframe
-    # you can pass the function a list of strings or integers
-    # all nba game ids have two leading zeros but you can omit these
-    # to make it easier to create lists of game ids as I add them on
-    # nba_df = ns.scrape_game([21800001])
-
-    # # if you want a csv if you don't pass a file path the default is home
-    # # directory
-    # # ns.scrape_game([21800001, 21800002], data_format='csv', data_dir='file/path')
-    # for col in nba_df.columns:
-    #     print(col) 
-
-    # print("Select specific columns:")
-    # print(nba_df[['period', 'pctimestring', 'event_type_de', 'score', 'home_team_abbrev', 'away_team_abbrev', 'hs', 'vs']])
-
-    # import nba_scraper.nba_scraper as ns
-
-    # # if you want to return a dataframe
-    # # you can pass the function a list of strings or integers
-    # # all nba game ids have two leading zeros but you can omit these
-    # # to make it easier to create lists of game ids as I add them on
-    # nba_df = ns.scrape_game([21800001, 21800002])
-    # print(nba_df)
 main()

@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 def get_todays_games(todays_date):
     months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
-    #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
+    
     schedule_df = pd.DataFrame()
 
     for month in months: 
@@ -25,7 +25,7 @@ def get_todays_games(todays_date):
 
     ## returns slate of games for entire regular season
     schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
-    #print(schedule_df.head(50))
+    
 
     ## making list of all dates
     temp_list = list(schedule_df['Date'])
@@ -35,9 +35,5 @@ def get_todays_games(todays_date):
             list_of_dates.append(date)
 
     ## returns slate of games for a specific date
-    print("\n")
-    #print(todays_date)
-    #print(schedule_df['Date'])
     day_schedule_df = schedule_df[schedule_df['Date'] == todays_date]
     return day_schedule_df
-# print(get_todays_games('Mon, Dec 02, 2019'))

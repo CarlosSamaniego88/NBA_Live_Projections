@@ -7,7 +7,6 @@ import time
 import numpy as np
 import seaborn as sns
 import glob
-#import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
@@ -25,7 +24,6 @@ algo = 2
 while (algo < 5):
     year_set = 1
     while (year_set < 5):
-        #cv_dataframes = []
         print('Using algo number ' + str(algo))
 
         ### Getting Team Stats from 2015-2019 into one Dataframe
@@ -47,7 +45,6 @@ while (algo < 5):
 
         team_stats = team_stats.drop(columns = ['PTS', 'DEF', 'G', 'PF', 'MP', 'Rk', 'FG', 'FGA', '3P', '3PA', '2P', '2PA', 'FT', 'FTA', 'TRB'], axis = 1)
         team_stats['Team'] = team_stats['Team'].str.replace('*', '')
-        #cv_dataframes = cv_dataframes.append(team_stats)
 
         # making list of all teams
         temp_list = list(team_stats['Team'])
@@ -91,14 +88,6 @@ while (algo < 5):
             by_row_index = team_stats.groupby(team_stats.Team)
             team_stats = by_row_index.mean()
 
-            #cv_dataframes = cv_dataframes.append(team_stats)
-            #print(team_stats)
-
-        # #     print(year)
-        # print('\n')
-        # #print(cv_dataframes)
-        #print(team_stats)
-
 
         ###Getting Matchups and Final Scores of Games from 2015-2019
         months = ['october', 'november', 'december', 'january', 'february', 'march']
@@ -110,7 +99,6 @@ while (algo < 5):
             years = ['2018']
         else:
             years = ['2019']
-        #columns = ['Date', 'Start (ET)', 'Visitor/Neutral', 'PTS', 'Home/Neutral', 'PTS.1']
         schedule_df = pd.DataFrame()
 
         for year in years:
@@ -130,20 +118,15 @@ while (algo < 5):
             print(year)
         schedule_df = schedule_df.drop(['Attend.', 'Notes', 'Unnamed: 6', 'Unnamed: 7'], axis=1)
 
-        #print(schedule_df['PTS'])
-        # print(type(schedule_df['PTS']))
-
-        # print(schedule_df)
 
         schedule_df['MoV'] = (schedule_df['PTS'].astype('int64') - schedule_df['PTS.1'].astype('int64'))
 
-        #print(schedule_df)
 
 
         trueMoV = list(schedule_df['MoV'])
 
         def fit_linear_reg(X,Y, algo):
-            #Fit linear regression model and return R squared values
+            #Fit regression model and return R squared values
             if (algo == 1):
                 model = LinearRegression(fit_intercept = True)
                 model.fit(X,Y)
@@ -160,7 +143,6 @@ while (algo < 5):
             R_squared = model.score(X,Y)
             return R_squared
 
-        #team_stats = cv_dataframes[3]
         Y = team_stats.dropna().MoV
         if (year_set == 1):
             X = team_stats.dropna().drop(columns = ['MoV', 'Team'], axis = 1)
@@ -189,7 +171,7 @@ while (algo < 5):
         df = pd.DataFrame({'numb_features': numb_features,'R_squared':R_squared_list,'features':feature_list})
         df_max_R_squared = df[df.groupby('numb_features')['R_squared'].transform(max) == df['R_squared']]
 
-        optimal_num_features = 6 #int(optimal_num_features)
+        optimal_num_features = 6 
 
         all_subsets = list(df_max_R_squared['features'])
         best_subset = list(all_subsets[optimal_num_features - 1])
@@ -199,7 +181,6 @@ while (algo < 5):
 
         ## Make New DataFrame With Only Subset Features
         subset_df = team_stats[best_subset]
-        #print(subset_df)
 
         if (algo == 1):
             model = LinearRegression(fit_intercept = True)
@@ -214,9 +195,6 @@ while (algo < 5):
             params = {'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2, 'learning_rate': 0.01, 'loss': 'ls'}
             model = ensemble.GradientBoostingRegressor(**params)
             model.fit(subset_df, Y)
-
-
-
 
         # Formatting Subset_DF To Make Predictions
         total_attribute_list = []
@@ -235,7 +213,6 @@ while (algo < 5):
                 temp_list.append(item[i])
             subset_stats_list.append(temp_list)
             i += 1
-        #print(subset_stats_list)
 
         ## Making Predicitions
         predictions = []
@@ -246,7 +223,6 @@ while (algo < 5):
         end_time = time.time()
         elapsed_time = end_time - start_time
         print("Algorithm time taken: " + str(elapsed_time))
-        #print(predictions)
 
         visiting_teams = list(schedule_df['Visitor/Neutral'])
         home_teams = list(schedule_df['Home/Neutral'])
@@ -269,18 +245,11 @@ while (algo < 5):
                 i += 1
 
         mov_pred = []
-        #schedule_df.reset_index(drop = True, inplace=True)
         i = 0
         while (i < len(schedule_df.index)):
             mov = round(visiting_team_projections[i][1] - home_team_projections[i][1], 2)
             mov_pred.append(mov)
             i += 1
-
-
-        # print(mov_pred)
-        # print(i)
-        # print(len(mov_pred))
-        # print(len(schedule_df.index))
 
         if (algo == 1):
             filename = 'multi_linear_mse.csv'
@@ -298,7 +267,6 @@ while (algo < 5):
 
         mse = mean_squared_error(trueMoV, mov_pred)
         append(str(mse), filename)
-        #print("MSE for algo number " + str(algo) + " and year_set " + str(year_set) + " = " + str(mse))
 
         year_set += 1
 
