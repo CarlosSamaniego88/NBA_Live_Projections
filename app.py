@@ -24,7 +24,8 @@ import re
 import xlsxwriter
 
 #WHOLE SCRIPT ORCHESTRATED BY CARLOS SAMANIEGO
-#CODE WRITTEN BY ALEX, ANDREW
+#CODE WRITTEN BY ALEX, ANDREW (33-151)
+#Sends in data to render the html template
 
 app = Flask(__name__)
 
