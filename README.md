@@ -12,6 +12,4 @@ to stop --> Control C
 
 Site should be located at "http://localhost:5000/"
 
-To get more info on how our model works, please run main.py.
-
-If you run the main.py script you should get a dataframe table of team stats along with a set of number of features with an associated graph that will tell you the best subset selection. Once you choose the number of features, it will display the predicted margins of victory based on the number of features.
+If you run main.py, it will output the r-squared graph, and compute the margin of victory with the best 6 features. It will then print out the dictionary of the teams and their predicted percentage of victory.
