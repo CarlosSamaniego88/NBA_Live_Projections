@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 
+# HOME ADVANTAGE DONE BY ANISH, ANDREW
+
 def get_home_advantage():
     pace = requests.get('https://www.teamrankings.com/nba/stat/average-scoring-margin', "html.parser")
     soup = BeautifulSoup(pace.content, "lxml")

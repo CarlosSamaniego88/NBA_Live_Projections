@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 from bs4 import Comment
 import re
 
+#GET TEAM STATS BY ALEX, ANDREW
+
 #In this file we retreive the 'Team Per 100 Possessions Stats' for use
 # Original link: https://www.basketball-reference.com/leagues/NBA_2020.html#all_team-stats-per_poss
 def get_team_stats(year):

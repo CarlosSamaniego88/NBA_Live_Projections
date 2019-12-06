@@ -19,6 +19,7 @@ from get_home_advantage import *
 from get_current_date import *
 
 #COMPLETE VERSION, main script in app.py is main, but reduced.
+#MAIN METHOD BY ANDREW HAISFIELD
 
 def main():
     team_stats = get_team_stats(2020)[0]

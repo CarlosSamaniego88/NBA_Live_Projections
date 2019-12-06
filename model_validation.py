@@ -20,6 +20,8 @@ from get_past_team_info import *
 from sklearn import tree
 from sklearn import ensemble
 
+#MODEL VALIDATION DONE BY ANISH, ANDREW
+
 algo = 2
 while (algo < 5):
     year_set = 1

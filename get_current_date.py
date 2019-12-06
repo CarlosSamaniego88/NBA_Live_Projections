@@ -1,3 +1,5 @@
+#GET CURRENT DATE BY ANDREW HAISFIELD
+
 def get_todays_date():
     from datetime import date
     # Getting Calendar Date

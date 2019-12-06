@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-
+#GET SCHEDULE BY ANDREW, ANISH
 def get_todays_games(todays_date):
     months = ['october', 'november', 'december', 'january', 'february', 'march', 'april']
     
