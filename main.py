@@ -11,7 +11,7 @@ import glob
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
-
+from sklearn.neighbors import KNeighborsRegressor
 from get_schedule import *
 from get_team_info import *
 from get_probability import *
@@ -45,9 +45,9 @@ def main():
 
     ##########################Choosing The Optimal Model###############################
 
-    ## Linear Regression Function
-    def fit_linear_reg(X,Y):
-        #Fit linear regression model and return R squared values
+    ## Get Best Feature Subset Function
+    def get_best_subset(X,Y):
+        #Fit knn regression model and return R squared values
         model_k = LinearRegression(fit_intercept = True)
         model_k.fit(X,Y)
         R_squared = model_k.score(X,Y)
@@ -69,7 +69,7 @@ def main():
     while (i < k + 1):
         combination_list = list(itertools.combinations(columns, i))
         for combo in combination_list:  
-            tmp_result = fit_linear_reg(X[list(combo)], Y)
+            tmp_result = get_best_subset(X[list(combo)], Y)
             R_squared_list.append(tmp_result)
             feature_list.append(combo)
             numb_features.append(len(combo))
@@ -101,8 +101,8 @@ def main():
 
     ## Make New DataFrame With Only Subset Features
     subset_df = team_stats[best_subset]
-    lin_reg = LinearRegression(fit_intercept = True)
-    lin_reg = lin_reg.fit(subset_df, Y)
+    model = KNeighborsRegressor(n_neighbors=4)
+    model = model.fit(subset_df, Y)
 
     # Formatting Subset_DF To Make Predictions
     total_attribute_list = []
@@ -125,7 +125,7 @@ def main():
     predictions = []
     i = 0
     while (i < len(list_of_teams)):
-        predictions.append(round(float(lin_reg.predict(np.array([subset_stats_list[i]]))), 3))
+        predictions.append(round(float(model.predict(np.array([subset_stats_list[i]]))), 3))
         i +=1
 
 
