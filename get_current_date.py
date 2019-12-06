@@ -1,4 +1,4 @@
-#GET CURRENT DATE BY ANDREW HAISFIELD
+#GET CURRENT DATE BY ANDREW, CARLOS
 
 def get_todays_date():
     from datetime import date
