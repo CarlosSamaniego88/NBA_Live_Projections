@@ -152,7 +152,6 @@ def display_predictions():
 
     i = 0
 
-    #157 - 182 written by Carlos Samaniego, Andrew Haisfield
     list_of_teams.sort()
     nba_logos = glob.glob('static/*.png')
     nba_logos.sort()
