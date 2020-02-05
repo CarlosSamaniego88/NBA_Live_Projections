@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 # GET WIN PROBABILITY BY ANDREW HAISFIELD
 def get_win_probability(projectedSpread):
 
-    probabilities = pd.read_csv("spread_to_probability.csv")
+    probabilities = pd.read_csv("csvfiles/spread_to_probability.csv")
     favorite_percentage = ''
     underdog_percentage = ''
 
